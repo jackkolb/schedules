@@ -1,3 +1,8 @@
+let elemOnMousedown = null
+let elemOnMouseover = null
+let selectionType = null
+let selectedCells = []
+
 function fillTable(table, hours, days) {
 	let titleRow = createTitleRow(days)
 	table.append(titleRow)
@@ -52,17 +57,39 @@ function createCell(row, col) {
 	return td
 }
 
-let elemOnMousedown = null
-let elemOnMouseover = null
-let selectionType = null
-let selectedCells = []
-
 function paintMouseoverCells(event) {
 	console.log("\nelemOnMousedown")
 	console.log(elemOnMousedown)
 
 	console.log("elemOnMouseover")
 	console.log(elemOnMouseover)
+
+	if (!elemOnMousedown) {
+		return;
+	}
+
+	const mouseDownRow = elemOnMousedown.getAttribute('data-row')
+    const mouseDownCol = elemOnMousedown.getAttribute('data-col')
+    const mouseOverRow = elemOnMouseover.getAttribute('data-row')
+    const mouseOverCol = elemOnMouseover.getAttribute('data-col')
+
+	const highRow = Math.max(mouseDownRow, mouseOverRow)
+    const lowRow  = Math.min(mouseDownRow, mouseOverRow)
+    const highCol = Math.max(mouseDownCol, mouseOverCol)
+    const lowCol  = Math.min(mouseDownCol, mouseOverCol)
+
+	let cells = document.getElementsByClassName('schedule-cell')
+	let selectedCells = []
+
+	for (let cell of cells) {
+		const state = cell.getAttribute('data-state')
+		const row = cell.getAttribute('data-row')
+		const col = cell.getAttribute('data-col')
+
+		if (row >= lowRow && row <= highRow && col >= lowCol && col <= highCol) {
+			selectedCells.push(cell)
+		}
+	}
 }
 
 
