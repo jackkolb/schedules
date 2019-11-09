@@ -75,4 +75,11 @@ def update():
 
     return "success"
 
+def add_headers(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
+
+if app.debug:
+    app.after_request(add_headers)
+
 app.run(host="0.0.0.0", port=5000)
