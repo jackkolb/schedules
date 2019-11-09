@@ -1,3 +1,5 @@
+let elemMousedown = null;
+
 let table = document.getElementById('schedule-table')
 let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 let times = ['9:00', '9:30', '10:00', '10:30', '11:00', '11:30', '12:00']
@@ -23,12 +25,19 @@ for (let time of times) {
 	td_time.innerHTML = time
 	tr.appendChild(td_time)
 	for (let day of days) {
-		let td = document.createElement('td')
+		let td = document.createElement('td') // create cell
+		td.classList.add('schedule-cell')
 		td.innerHTML = "*"
 		tr.appendChild(td)
 
+
 		td.addEventListener("mouseover", (event) => {
-			console.log(event.target.innerHTML)
+			
+		})
+
+		td.addEventListener("mousedown", (event) => {
+			elemMousedown = event.target
+			console.log(event.target)
 		})
 
 	}
