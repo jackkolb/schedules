@@ -1,0 +1,10 @@
+body {
+	background-color: lightyellow;
+}
+
+.schedule-cell {
+	background-color: lightblue;
+}
+.schedule-cell:hover  {
+	background-color: lightgreen;
+}
