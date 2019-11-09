@@ -141,6 +141,8 @@ function main(table) {
             setCell(cell, selectionType)
         }
 
+
+
         selectedCells = []
         elemOnMousedown = null
         selectionType = null
@@ -150,13 +152,13 @@ function main(table) {
 const scheduleTable = document.getElementById('schedule-table')
 main(scheduleTable)
 
-// let xhttp = new XMLHttpRequest();
-// xhttp.onreadystatechange = () => {
-//  if (this.readyState == 4 && this.status == 200) {
-//      console.log("request!")
-//  }
-// }
+let xhttp = new XMLHttpRequest();
+xhttp.onreadystatechange = () => {
+    if (this.status == 200) {
+        console.log("request!")
+    }
+}
 
-// const FIREBASE_URL = "htt10.28.92.95/org/data/?id=1"
-// xhttp.open('GET', FIREBASE_URL, true)
-// xhttp.send() # send request to the server
+const FIREBASE_URL = "http://10.28.92.95/org_data?id=1"
+xhttp.open('GET', FIREBASE_URL, true)
+xhttp.send() // send request to the server
