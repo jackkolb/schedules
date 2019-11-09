@@ -1,3 +1,4 @@
+gcloud
 python-jwt==3.2.4
 Flask==1.1.1
 firebase==3.0.1
