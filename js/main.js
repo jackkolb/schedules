@@ -26,6 +26,11 @@ for (let time of times) {
 		let td = document.createElement('td')
 		td.innerHTML = "*"
 		tr.appendChild(td)
+
+		td.addEventListener("mouseover", (event) => {
+			console.log(event.target.innerHTML)
+		})
+
 	}
 	table.appendChild(tr)
 	console.log(time)
