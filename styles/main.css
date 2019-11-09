@@ -1,5 +1,7 @@
 body {
 	background-color: lightyellow;
+	border-spacing: 0;
+
 }
 
 #schedule-table {
@@ -8,10 +10,10 @@ body {
 
 .schedule-cell {
 	background-color: lightblue;
-
+	box-sizing: border-box;
 }
 .schedule-cell:hover  {
-	background-color: green;
+	box-sizing: border-box;
 }
 
 .no-user-select {
@@ -20,4 +22,12 @@ body {
    -khtml-user-select: none; /* Konqueror HTML */
    -moz-user-select: none; /* Firefox */
    -ms-user-select: none; /* Internet Explorer/Edge */
+}
+
+.cell-red {
+	
+}
+
+.cell-green {
+	background-color: green;
 }
