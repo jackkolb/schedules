@@ -11,15 +11,34 @@
     <input type="text" id="schedule-input" name="schedule-input" value="My Schedule">
     <button>Profile / User options</button>
     <button>Manager Options (Creator only)</button>
+    
     <br />
-    <select> <!--dropdown menu-->
-        <option value="red">Red</option>
-        <option value="green">Green</option>
-        <option value="blue">Blue</option>
-    </select>
-    <button>Meeting Time</button>
-    <button>Flip!</button>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs">
+                <!--Tag Select dropdown menu-->
+                <select>
+                    <option value="red">Red</option>
+                    <option value="green">Green</option>
+                    <option value="blue">Blue</option>
+                </select>
+            </div>
+            <div class="col-xs">
+                <!--Meeting Time (Creator only)-->
+                <button>Meeting Time</button>
+            </div>
+            <div class="col-xs">
+                <!--Inverse Mode button-->
+                <button>Inverse Mode
+                    <img src="images/positive-negative-64x64.png" class="card-img-top" alt="inverse-image" style="width:24px;height:24px;">
+                </button>
+            </div>
+            
+        </div>
+    </div>
+
     <table id="schedule-table"></table>
+    
     <br />
     <div class="container">
         <div class="row">
@@ -45,15 +64,16 @@
                             <option value="blue">Blue</option>
                         </select>
                         <br />
+                        <!-- <img src="..." class="card-img-top" alt="...">
                         <img src="..." class="card-img-top" alt="...">
-                        <img src="..." class="card-img-top" alt="...">
-                        <img src="..." class="card-img-top" alt="...">
+                        <img src="..." class="card-img-top" alt="..."> -->
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!--Bootstrap code-->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
         crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"

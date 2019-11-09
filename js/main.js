@@ -35,3 +35,13 @@ for (let time of times) {
 	table.appendChild(tr)
 	console.log(time)
 }
+
+let xhttp = new XMLHttpRequest();
+xhttp.onreadystatechange = () => {
+	if (this.readyState == 4 && this.status == 200) {
+		console.log("request!")
+	}
+}
+const FIREBASE_URL = "http://10.28.92.95/org/data/?id=1"
+xhttp.open('GET', FIREBASE_URL, true)
+xhttp.send() // send request to the server
