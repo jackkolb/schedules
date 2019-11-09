@@ -1,3 +1,12 @@
+function fillTable(table, hours, days) {
+	let titleRow = createTitleRow(days)
+	table.append(titleRow)
+	for (let row = 0; row < hours.length; row++) {
+		let hourRow = createHourRow(row, hours[row], days)
+		table.append(hourRow)
+	}
+}
+
 function createTitleRow(days) {
 	let tr = document.createElement('tr')
 	let th = document.createElement('th')
@@ -14,47 +23,62 @@ function createHourRow(row, hour, days) {
 	let tr = document.createElement('tr')
 	let td = document.createElement('td')
 	td.innerHTML = hour
+	td.classList.add('no-user-select')
 	tr.append(td)
 	for (let col = 0; col < days.length; col++) {
-		let cell = createScheduleCell(row, col)
+		let cell = createCell(row, col)
 		tr.append(cell)
 	}
 	return tr
 }
 
-function createScheduleCell(r, c) {
+function createCell(row, col) {
 	let td = document.createElement('td')
-	td.innerHTML = "("+r+","+c+")"
+	td.innerHTML = "("+row+","+col+")"
+	td.classList.add('schedule-cell')
+	td.classList.add('no-user-select')
+
+	td.setAttribute('data-state', 0)
+	td.setAttribute('data-row', row)
+	td.setAttribute('data-col', col)
+
+	td.addEventListener("mousedown", (event) => {
+		elemOnMousedown = event.target
+	})
 
 	td.addEventListener("mouseover", (event) => {
-		console.log(event.target)
+		elemOnMouseover = event.target
 	})
 	return td
 }
 
-function fillTable(table, hours, days) {
-	let titleRow = createTitleRow(days)
-	table.append(titleRow)
-	for (let row = 0; row < hours.length; row++) {
-		let hourRow = createHourRow(row, hours[row], days)
-		table.append(hourRow)
-	}
+let elemOnMousedown = null
+let elemOnMouseover = null
+let selectionType = null
+let selectedCells = []
+
+function paintMouseoverCells(event) {
+	console.log("\nelemOnMousedown")
+	console.log(elemOnMousedown)
+
+	console.log("elemOnMouseover")
+	console.log(elemOnMouseover)
 }
 
+
 function main(table) {
-	let elemOnMousedown = null
-	let elemOnMouseover = null
-	let selectionType = null
-	
 	//const aggregateTable = document.getElementById('table-display')
 	//const toggleCells = document.getElementsByClassName('cell')
 	//const aggregateCells = document.getElementsByClassName('cell-display')
-	let selectedCells = []
+	
 
-	const hours = ['12:00', '12:30', ' 1:00', ' 1:30', '2:00', '2:30', '3:00']
+	const hours = ['8:00', '8:30', '9:00', '9:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', ' 1:00', ' 1:30', '2:00', '2:30', '3:00']
 	const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
 	fillTable(table, hours, days)
+
+	document.addEventListener("mouseover", paintMouseoverCells)
+	document.addEventListener("mousedown", paintMouseoverCells)
 }
 
 const scheduleTable = document.getElementById('schedule-table')
