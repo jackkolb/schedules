@@ -1,10 +1,15 @@
-let elemMousedown = null;
+let elemOnMousedown = null
+let elemOnMouseover = null
+let selectionType = null
 
-let table = document.getElementById('schedule-table')
-let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-let times = ['9:00', '9:30', '10:00', '10:30', '11:00', '11:30', '12:00']
+const table = document.getElementById('table-clickable')
+const aggregateTable = document.getElementById('table-display')
+const toggleCells = document.getElementsByClassName('cell')
+const aggregateCells = document.getElementsByClassName('cell-display')
+let selectedCells = []
 
-console.log(table)
+const hours = ['12:00', '12:30', ' 1:00', ' 1:30', '2:00', '2:30', '3:00']
+const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
 
 let tr_top = document.createElement('tr')
@@ -18,18 +23,17 @@ for (let day of days) {
 table.append(tr_top)
 
 
-for (let time of times) {
+for (let hour of hours) {
 	let tr = document.createElement('tr')
 
 	let td_time = document.createElement('td')
-	td_time.innerHTML = time
+	td_time.innerHTML = hour
 	tr.appendChild(td_time)
 	for (let day of days) {
 		let td = document.createElement('td') // create cell
 		td.classList.add('schedule-cell')
 		td.innerHTML = "*"
 		tr.appendChild(td)
-
 
 		td.addEventListener("mouseover", (event) => {
 			
@@ -42,5 +46,4 @@ for (let time of times) {
 
 	}
 	table.appendChild(tr)
-	console.log(time)
 }
