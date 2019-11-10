@@ -30,7 +30,7 @@ def update():
         org_id = request.form["id"]
         print("org_id" + org_id)
     action = request.form["action"]
-    print(request.form.keys())
+    print(str(request.form.keys()))
     
 
     if action == "add_org":
@@ -81,7 +81,7 @@ def update():
     if action == "update_user_schedule":
         user_id = request.form["user_id"]
         schedule = request.form["schedule"]
-        firebase_util.update_user_schedule(org_id, user_id, schedule)
+        firebase_util.update_schedule(org_id, user_id, schedule)
 
     return "success"
 
