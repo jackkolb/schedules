@@ -1,6 +1,6 @@
 let xhttp = new XMLHttpRequest();
 const FIREBASE_URL = "http://scheduler-cutiehack.herokuapp.com"
-const scheduleTable = document.getElementById('schedule-table')
+const scheduleContainer = document.getElementById('schedule-container')
 let orgData = null
 let users = null
 let schedulesDictonary = {}
@@ -20,12 +20,14 @@ let manager_menu = document.getElementById('manager-menu')
 let tag_textbox_manager = document.getElementById('tag-textbox-manager')
 let tag_submit_manager = document.getElementById('tag-submit-manager')
 
-function main(table) {
+function main() {
     const hours = ['8:00', '8:30', '9:00', '9:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', ' 1:00', ' 1:30', '2:00', '2:30', '3:00']
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
-    
-    fillTable(table, hours, days)
+    const stateList = JSON.parse(orgData.users[USER_ID].schedule)
+    let table = createScheduleTable("schedule-table", hours, days, stateList)
+    scheduleContainer.append(table)
+
     cells = document.getElementsByClassName('schedule-cell')
 
     document.addEventListener("mouseover", paintMouseoverCells)
@@ -71,7 +73,7 @@ xhttp.onload = () => {
     orgData = JSON.parse(xhttp.response)
     users = orgData.users
 
-    main(scheduleTable)
+    main()
 
     populateTags(users, tags_select, orgData.tags)
 

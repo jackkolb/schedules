@@ -1,5 +1,5 @@
 // table.js manages updating, drawing, and refreshing the schedule table
-let cell_counter = -1;
+//let cell_counter = -1;
 
 function colorCells() {
     let totalUsers = Object.keys(users).length
@@ -72,43 +72,115 @@ function populateScheduleGrid(users, tag="all") {
 
 }
 
-// fillTable creates the table
-function fillTable(table, hours, days) {
-    let titleRow = createTitleRow(days)
+/*
+    createScheduleTable()
+    Returns a <table> containing rows for each half hour of the day
+    and columns for the hours and each day of the week.
+    arguments:
+        id: string
+        hourList: list of strings
+        dayList: list of strings
+        userScheduleList: list of ints (0 or 1)
+    return:
+        HTML element <table>
+*/
+function createScheduleTable(id, hourList, dayList, userScheduleList) {
+    const table = document.createElement('table')
+    table.id = id
+    const titleRow = createTitleRow(dayList)
     table.append(titleRow)
-    states = JSON.parse(orgData.users[USER_ID].schedule)
-    for (let row = 0; row < hours.length; row++) {
-        let hourRow = createHourRow(row, hours[row], days, states)
+    for (let row = 0; row < hourList.length; row++) {
+        const hour = hourList[row]
+        const columns = dayList.length
+        const hourRow = createHourRow(row, hour, columns, userScheduleList)
         table.append(hourRow)
     }
+    return table
 }
 
-// createTitleRow creates the header row (day of the week)
-function createTitleRow(days) {
-    let tr = document.createElement('tr')
-    let th = document.createElement('th')
+/*
+    createTitleRow()
+    Returns a <tr> containing a blank cell and each day of the week.
+    arguments:
+        dayList: list of strings
+    return:
+        HTML element <tr>
+*/
+function createTitleRow(dayList) {
+    const tr = document.createElement('tr')
+    const th = document.createElement('th')
     tr.append(th)
-    for (let day of days) {
+    for (let i = 0; i < dayList.length; i++) {
         let th = document.createElement('th')
-        th.innerHTML = day.substring(0,3)
+        th.innerHTML = dayList[i].substring(0,3)
         tr.append(th)
     }
     return tr
 }
 
-// createHourRow creates the rows
-function createHourRow(row, hour, days, states) {
-    let tr = document.createElement('tr')
-    let td = document.createElement('td')
+/*
+    createHourRow()
+    Returns a <tr> containing cells for the hour and cells for each day of the week.
+    arguments:
+        row: int
+        hour: string
+        columns: int
+        states: list of ints (0 or 1)
+    return:
+        HTML element <tr>
+*/
+function createHourRow(row, hour, columns, userScheduleList) {
+    const tr = document.createElement('tr')
+    const td = document.createElement('td')
     td.innerHTML = hour
     td.classList.add('no-user-select')
     tr.append(td)
-    for (let col = 0; col < days.length; col++) {
-        cell_counter++
-        let cell = createCell(row, col, states[cell_counter])
+    for (let col = 0; col < columns; col++) {
+        const index = columns * row + col
+        const cell = createCell(row, col, userScheduleList[index])
         tr.append(cell)
     }
     return tr
+}
+
+/*
+    createCell()
+    Returns a <td> containing some information and event listeners.
+    arguments:
+        row: integer
+        col: integer
+        state: integer
+    return:
+        HTML element <td>
+*/
+function createCell(row, col, state) {
+    let td = document.createElement('td')
+    td.classList.add('schedule-cell')
+    td.classList.add('no-user-select')
+
+    td.setAttribute('data-state', state)
+    td.setAttribute('data-row', row)
+    td.setAttribute('data-col', col)
+
+    td.addEventListener("mousedown", cellOnMousedown)
+    td.addEventListener("mouseup", cellOnMouseUp)
+    td.addEventListener("mouseover", cellOnMouseover)
+    return td
+}
+
+function cellOnMouseover(event) {
+    if (orgData) {
+        elemOnMouseover = event.target
+
+        let users = orgData.users
+        let listString = event.target.getAttribute('data-ids')
+        let array = listString.split(",")
+
+        cell_info.innerHTML = ""
+        for (let user in array) {
+             cell_info.innerHTML += users[user].name + ", "
+        }
+    }
 }
 
 function cellOnMousedown (event) {
@@ -152,34 +224,6 @@ function cellOnMouseUp (event) {
     submit(() => refreshData())
 }
 
-function createCell(row, col, state) {
-    let td = document.createElement('td')
-    td.classList.add('schedule-cell')
-    td.classList.add('no-user-select')
-
-    td.setAttribute('data-state', state)
-    td.setAttribute('data-row', row)
-    td.setAttribute('data-col', col)
-
-    td.addEventListener("mousedown", cellOnMousedown)
-    td.addEventListener("mouseup", cellOnMouseUp)
-    td.addEventListener("mouseover", (event) => {
-        if (orgData) {
-            elemOnMouseover = event.target
-
-            let users = orgData.users
-            let listString = event.target.getAttribute('data-ids')
-            let array = listString.split(",")
-
-            cell_info.innerHTML = ""
-            for (let user in array) {
-                 cell_info.innerHTML += users[user].name + ", "
-            }
-        }
-    })
-    return td
-}
-
 function setCell(elem, state) {
     elem.setAttribute('data-state', state)
     paintCell(elem, state)
@@ -193,7 +237,8 @@ function paintCell(elem, state) {
         elem.classList.remove('cell-green')
         elem.classList.add('cell-red')
     } else {
-        console.error('Invalid state' + state)
+        console.log(elem)
+        console.error('Invalid state ' + state)
     }
 }
 

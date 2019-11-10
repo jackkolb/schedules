@@ -10,8 +10,8 @@
 
 <body>
     <script>
-        const ORG_ID = {{ org_id }}
-        const USER_ID = {{ user_id }}    
+        const ORG_ID = "1"//{{ org_id }}
+        const USER_ID = "1"//{{ user_id }}    
     </script>
 
     <div id="container">
@@ -47,7 +47,10 @@
     <button>Meeting Time</button>
     <button>Flip!</button>
     
-    <table id="schedule-table"></table>
+    <div id="schedule-container">
+        <!-- table with rows and columns for the schedule -->
+    </div>
+    
 
     <div id="cell-info">
         HOVER INFO
@@ -58,6 +61,6 @@
     <script type="text/javascript" src="../static/js/table.js"></script>
     <script type="text/javascript" src="../static/js/api_interface.js"></script>
     <script type="text/javascript" src="../static/js/main.js"></script>
-
+    <script type="text/javascript" src="../static/js/test.js"></script>
 </body>
 </html>
