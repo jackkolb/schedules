@@ -29,33 +29,6 @@ function main(table) {
 
     document.addEventListener("mouseover", paintMouseoverCells)
     document.addEventListener("mousedown", paintMouseoverCells)
-    document.addEventListener("mouseup", (event) => {
-        for (let cell of selectedCells) {
-            setCell(cell, selectionType)
-            cell.classList.remove("selected")
-        }
-
-        let scheduleList = JSON.parse(orgData.users[USER_ID].schedule);
-        console.log(scheduleList)
-        for (let i=0; i<cells.length; i++) {
-            cell = cells[i]
-            let state = cell.getAttribute('data-state')
-            scheduleList[i] = Number(state)
-            cell.innerHTML = state
-        }
-
-        let jsonSchedule = JSON.stringify(scheduleList)
-        let jsonString = 'id='+ ORG_ID + '&action=update_user_schedule' +
-            '&user_id='+USER_ID + '&schedule='+jsonSchedule
-        sendData('POST', FIREBASE_URL+'/update', jsonString)
-
-        selectedCells = []
-        elemOnMousedown = null
-        selectionType = null
-
-        function refresh() { location.reload() }
-        
-    })
 }
 
 function populateTags(users, selectElem, userTags) {
