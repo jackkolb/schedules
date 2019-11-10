@@ -1,7 +1,7 @@
 /*
-	This file contains a class Test that will test other functions
+	Test
+	This class tests that other functions are correct.
 */
-
 class Test {
 	constructor() {
 		this.pass = "."
@@ -29,7 +29,7 @@ class Test {
 		return t1.getAttribute('data-state') === "0" ? this.pass : this.fail
 	}
 
-	test_updateCells() {
+	test_selectCells() {
 		let cellList = []
 		for (let i = 0; i < 5; i++) {
 			for (let j = 0; j < 5; j++) {
@@ -37,9 +37,9 @@ class Test {
 				cellList.push(cell)
 			}
 		}
-		let t1 = updateCells(cellList[0], cellList[3], cellList)
-		let t2 = updateCells(cellList[0], cellList[0], cellList)
-		let t3 = updateCells(cellList[2], cellList[4], cellList)
+		let t1 = selectCells(cellList[0], cellList[3], cellList)
+		let t2 = selectCells(cellList[0], cellList[0], cellList)
+		let t3 = selectCells(cellList[2], cellList[4], cellList)
 		let condition = t1.length === 4 
 					 && t2.length === 1 
 					 && t3[0].classList.contains('selected') === true
@@ -55,7 +55,7 @@ class Test {
 		results += this.test_createScheduleTable()
 		results += this.test_createTitleRow()
 		results += this.test_createCell()
-		results += this.test_updateCells()
+		results += this.test_selectCells()
 		console.log(results)
 	}
 }

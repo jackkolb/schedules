@@ -16,11 +16,11 @@ function colorCells() {
 
 function onMouseAction(event) {
     if (elemOnMousedown === null || elemOnMouseover === null) return;
-    selectedCells = updateCells(elemOnMousedown, elemOnMouseover, cells)
+    selectedCells = selectCells(elemOnMousedown, elemOnMouseover, cells)
 }
 
 /*
-    updateCells()
+    selectCells()
     Get the (row,col) of the mousedown cell and the (row,col) of the mouseover cell to create a "bounding box". 
     The mousedown cell and all cells within this bounding box have their 'data-state' changed.
     The new state is the opposite of the mousedown cell's previous state.
@@ -31,26 +31,17 @@ function onMouseAction(event) {
     return:
         selectedCellList: list of HTML elements <td>
 */
-function updateCells(cellMousedown, cellMouseover, cellList) {
-    const rowMousedown = cellMousedown.getAttribute('data-row')
-    const colMousedown = cellMousedown.getAttribute('data-col')
-
-    const rowMouseover = cellMouseover.getAttribute('data-row')
-    const colMouseover = cellMouseover.getAttribute('data-col')
-
-    const rowMax = Math.max(rowMousedown, rowMouseover)
-    const rowMin = Math.min(rowMousedown, rowMouseover)
-    const colMax = Math.max(colMousedown, colMouseover)
-    const colMin = Math.min(colMousedown, colMouseover)
+function selectCells(cellMousedown, cellMouseover, cellList) {
+    const [rowMousedown, colMousedown] = [cellMousedown.getAttribute('data-row'), cellMousedown.getAttribute('data-col')]
+    const [rowMouseover, colMouseover] = [cellMouseover.getAttribute('data-row'), cellMouseover.getAttribute('data-col')]
+    const [rowMin, colMin] = [Math.min(rowMousedown, rowMouseover), Math.min(colMousedown, colMouseover)]
+    const [rowMax, colMax] = [Math.max(rowMousedown, rowMouseover), Math.max(colMousedown, colMouseover)]
 
     let selectedCellList = []
     for (let i = 0; i < cellList.length; i++) {
         cellList[i].classList.remove("selected")
-
-        const row = cellList[i].getAttribute('data-row')
-        const col = cellList[i].getAttribute('data-col')
+        const [row, col] = [cellList[i].getAttribute('data-row'), cellList[i].getAttribute('data-col')]
         const insideBoundingBox = (row >= rowMin && row <= rowMax) && (col >= colMin && col <= colMax)
-
         if (insideBoundingBox) {
             selectedCellList.push(cellList[i])
             cellList[i].classList.add("selected")
