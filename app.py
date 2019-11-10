@@ -30,7 +30,7 @@ def update():
         org_id = request.form["id"]
         print("org_id" + org_id)
     action = request.form["action"]
-    print("action" + action)
+    print(request.form.keys())
     
 
     if action == "add_org":
