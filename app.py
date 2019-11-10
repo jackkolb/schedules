@@ -1,24 +1,30 @@
 from flask import Flask, render_template, request, jsonify
+from flask_cors import CORS, cross_origin
 from firebase import firebase
 import firebase_util 
 
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 @app.route("/")
 def index():
     return render_template("index.html")
 
 @app.route("/org", methods=["GET"])
+@cross_origin()
 def get_org():
     org_id = request.args.get("id")
     return render_template("schedule.html", org_id=org_id)
 
 @app.route("/org_data", methods=["GET"])
+@cross_origin()
 def get_org_data():
     org_id = request.args.get("id")
     return jsonify(firebase_util.get_org(org_id))
 
 @app.route("/update", methods=["POST"])
+@cross_origin()
 def update():
     org_id = request.form["organization"]
     action = request.form["action"]
