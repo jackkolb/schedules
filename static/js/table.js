@@ -14,47 +14,53 @@ function colorCells() {
     }
 }
 
+function onMouseAction(event) {
+    if (elemOnMousedown === null || elemOnMouseover === null) return;
+    selectedCells = updateCells(elemOnMousedown, elemOnMouseover, cells)
+}
+
 /*
-    paintMouseoverCells()
+    updateCells()
     Get the (row,col) of the mousedown cell and the (row,col) of the mouseover cell to create a "bounding box". 
     The mousedown cell and all cells within this bounding box have their 'data-state' changed.
     The new state is the opposite of the mousedown cell's previous state.
     arguments:
-        event: HTML object
+        cellMousedown: HTML element <td>
+        cellMouseover: HTML element <td>
+        cellList: list of HTML elements <td>
     return:
-        undefined
+        selectedCellList: list of HTML elements <td>
 */
-function paintMouseoverCells(event) {
-    if (elemOnMousedown === null) return;
-    
-    const mouseDownRow = elemOnMousedown.getAttribute('data-row')
-    const mouseDownCol = elemOnMousedown.getAttribute('data-col')
-    const mouseOverRow = elemOnMouseover.getAttribute('data-row')
-    const mouseOverCol = elemOnMouseover.getAttribute('data-col')
+function updateCells(cellMousedown, cellMouseover, cellList) {
+    const rowMousedown = cellMousedown.getAttribute('data-row')
+    const colMousedown = cellMousedown.getAttribute('data-col')
 
-    const rowMax = Math.max(mouseDownRow, mouseOverRow)
-    const rowMin  = Math.min(mouseDownRow, mouseOverRow)
-    const colMax = Math.max(mouseDownCol, mouseOverCol)
-    const colMin  = Math.min(mouseDownCol, mouseOverCol)
+    const rowMouseover = cellMouseover.getAttribute('data-row')
+    const colMouseover = cellMouseover.getAttribute('data-col')
 
-    selectedCells = []
-    for (let i = cells.length - 1; i >= 0; i--) {
-        const row = cells[i].getAttribute('data-row')
-        const col = cells[i].getAttribute('data-col')
-        const insideBoundingBox = row >= rowMin && row <= rowMax && col >= colMin && col <= colMax
+    const rowMax = Math.max(rowMousedown, rowMouseover)
+    const rowMin = Math.min(rowMousedown, rowMouseover)
+    const colMax = Math.max(colMousedown, colMouseover)
+    const colMin = Math.min(colMousedown, colMouseover)
+
+    let selectedCellList = []
+    for (let i = 0; i < cellList.length; i++) {
+        cellList[i].classList.remove("selected")
+
+        const row = cellList[i].getAttribute('data-row')
+        const col = cellList[i].getAttribute('data-col')
+        const insideBoundingBox = (row >= rowMin && row <= rowMax) && (col >= colMin && col <= colMax)
+
         if (insideBoundingBox) {
-            selectedCells.push(cells[i])
-            paintCell(cells[i], selectionType)
+            selectedCellList.push(cellList[i])
+            cellList[i].classList.add("selected")
+            paintCell(cellList[i], selectionType)
         } else {
-            const state = cells[i].getAttribute('data-state')
-            paintCell(cells[i], state)
+            const state = cellList[i].getAttribute('data-state')
+            paintCell(cellList[i], state)
         }
-        cells[i].classList.remove("selected")
     }
-
-    for (let i = selectedCells.length-1; i >= 0; i--) {
-        selectedCells[i].classList.add("selected")
-    }
+    return selectedCellList
 }
 
 function populateScheduleGrid(users, tag="all") {
@@ -253,11 +259,9 @@ function setCell(elem, state) {
 
 function paintCell(elem, state) {
     if (Number(state) === 1) {
-        elem.classList.remove('cell-red')
-        elem.classList.add('cell-green')
+        elem.classList.add('cell-chosen')
     } else if (Number(state) === 0) {
-        elem.classList.remove('cell-green')
-        elem.classList.add('cell-red')
+        elem.classList.remove('cell-chosen')
     } else {
         console.log(elem)
         console.error('Invalid state ' + state)

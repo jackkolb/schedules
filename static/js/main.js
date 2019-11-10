@@ -30,8 +30,8 @@ function main() {
 
     cells = document.getElementsByClassName('schedule-cell')
 
-    document.addEventListener("mouseover", paintMouseoverCells)
-    document.addEventListener("mousedown", paintMouseoverCells)
+    document.addEventListener("mouseover", onMouseAction)
+    document.addEventListener("mousedown", onMouseAction)
 }
 
 function populateTags(users, selectElem, userTags) {

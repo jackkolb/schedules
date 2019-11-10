@@ -16,6 +16,7 @@ class Test {
 
 		return t1.children.length === 3 ? this.pass : this.fail
 	}
+
 	test_createTitleRow() {
 		let t1 = createTitleRow(["d1, d2"])
 		let t2 = createTitleRow(["d1"])
@@ -28,6 +29,25 @@ class Test {
 		return t1.getAttribute('data-state') === "0" ? this.pass : this.fail
 	}
 
+	test_updateCells() {
+		let cellList = []
+		for (let i = 0; i < 5; i++) {
+			for (let j = 0; j < 5; j++) {
+				let cell = createCell(i,j,0)
+				cellList.push(cell)
+			}
+		}
+		let t1 = updateCells(cellList[0], cellList[3], cellList)
+		let t2 = updateCells(cellList[0], cellList[0], cellList)
+		let t3 = updateCells(cellList[2], cellList[4], cellList)
+		let condition = t1.length === 4 
+					 && t2.length === 1 
+					 && t3[0].classList.contains('selected') === true
+					 && cellList[1].classList.contains('selected') === false
+					 && cellList[5].classList.contains('selected') === false
+		return condition ? this.pass : this.fail
+	}
+
 	test() {
 		console.log("==== Running tests ====")
 		//console.log("'.' is pass, 'F' is fail, 'E' is error")
@@ -35,6 +55,7 @@ class Test {
 		results += this.test_createScheduleTable()
 		results += this.test_createTitleRow()
 		results += this.test_createCell()
+		results += this.test_updateCells()
 		console.log(results)
 	}
 }
