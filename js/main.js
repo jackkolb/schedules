@@ -3,7 +3,11 @@ console.log(xhttp)
 const FIREBASE_URL = "http://scheduler-cutiehack.herokuapp.com"
 const ORG_ID = "1"
 const USER_ID = "1"
+let schedulesReceived = null
+let schedulesDictonary = {}
 //"http://10.28.92.95:/org_data?id=1"
+let totalScheduleArray = []
+let userArray = []
 
 let elemOnMousedown = null
 let elemOnMouseover = null
@@ -179,13 +183,50 @@ function sendData(method, url, jsonData) {
     xhttp.send(jsonData)
 }
 
+function fillAggregateArray(users) {
 
-xhttp.onreadystatechange = () => {
-    if (xhttp.status == 200) {
-        console.log(xhttp.response)
-    }
 }
 
 
-xhttp.open('GET', FIREBASE_URL+"/org_data?id=1", true)
-xhttp.send() // send request to the server
+function requestSchedules() {
+    const url = FIREBASE_URL+'/org_data?id='+ORG_ID
+    xhttp.open('GET', url, true)
+    xhttp.send()
+}
+
+xhttp.onload = () => {
+    console.log("ONLOAD().....")
+    if (xhttp.status == 200) {
+        console.log(xhttp.response)
+    }
+
+    schedulesReceived = JSON.parse(xhttp.response)
+
+    let users = schedulesReceived.users
+    totalScheduleArray = new Array(cells.length).fill(0);
+
+    userArray = new Array(cells.length).fill(0);
+    for (let i = 0; i < cells.length; i++) {
+        userArray[i] = new Array();
+    }
+   
+    for (let user in users) {
+        let userScheduleArray = JSON.parse(users[user].schedule)
+        for (let i = 0; i < userScheduleArray.length; i++) {
+            if (userScheduleArray[i] == 1) {
+                totalScheduleArray[i] += 1
+                userArray[i].push(user)
+            }
+        }
+    }
+    console.log(userArray)
+
+    for (let i = 0; i < cells.length; i++) {
+        cells[i].innerHTML = userArray[i]
+    }
+}
+
+requestSchedules()
+
+// xhttp.open('GET', FIREBASE_URL+"/org_data?id=1", true)
+// xhttp.send() // send request to the server
