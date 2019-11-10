@@ -2,6 +2,7 @@ let xhttp = new XMLHttpRequest();
 const FIREBASE_URL = "http://scheduler-cutiehack.herokuapp.com"
 const scheduleTable = document.getElementById('schedule-table')
 let orgData = null
+let users = null
 let schedulesDictonary = {}
 let totalScheduleArray = []
 let userArray = []
@@ -64,33 +65,11 @@ function populateUserTagCheckboxes(schedules) {
     }    
 }
 
-function populateScheduleGrid(users, tag="all") {
-    // Populating the arrays [105]
-    let userArray = new Array(cells.length).fill(0);
-    for (let i = 0; i < cells.length; i++) {
-        userArray[i] = new Array();
-    }
-
-    for (let user in users) {
-        let userScheduleArray = JSON.parse(users[user].schedule)
-        for (let i = 0; i < userScheduleArray.length; i++) {
-            if (userScheduleArray[i] == 1 && (tag == "all" || users[user].tags.includes(tag)) ) {
-                totalScheduleArray[i] += 1
-                userArray[i].push(user)
-            }
-        }
-    }
-    for (let i = 0; i < cells.length; i++) {
-        cells[i].setAttribute('data-ids', userArray[i])
-    }
-
-}
-
 xhttp.onload = () => {
     if (xhttp.status == 200) {
     }
     orgData = JSON.parse(xhttp.response)
-    let users = orgData.users
+    users = orgData.users
 
     main(scheduleTable)
 
@@ -99,28 +78,8 @@ xhttp.onload = () => {
     totalScheduleArray = new Array(cells.length).fill(0);
 
     populateUserTagCheckboxes(orgData)
-    populateScheduleGrid(users)
-    
-    let rgbToHex = function (rgb) {
-        let hex = Number(rgb).toString(16);
-        if (hex.length < 2) {
-            hex = "0" + hex;
-        }
-        return hex;
-    };
-    
-
-    //let totalUsers = Math.max(...totalScheduleArray)
-    let totalUsers = Object.keys(users).length
-    for (let i = 0; i < cells.length; i++) {
-        let number = totalScheduleArray[i]
-        
-        let proportion = (number/totalUsers)
-        let scale = 255 - Math.round(proportion * 255)
-        let color = rgbToHex(scale) + rgbToHex(scale) + rgbToHex(255)
-        cells[i].style = "background-color: #" + color + ";"
-        cells[i].innerHTML = (number > 0 ? number : "")
-    }
+    populateScheduleGrid(users)    
+    colorCells();
     document.getElementById('org-textbox-manager').value = orgData.name
 }
 

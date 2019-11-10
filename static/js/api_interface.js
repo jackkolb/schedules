@@ -15,6 +15,22 @@ function requestSchedules() {
     xhttp.send()
 }
 
+function refreshData() {
+    req = new XMLHttpRequest();
+    req.open('GET', FIREBASE_URL+'/org_data?id='+ORG_ID, true)
+    req.send()
+    req.onload = () => {
+        orgData = JSON.parse(xhttp.response)
+        users = orgData.users
+        populateTags(users, tags_select, orgData.tags)
+        populateUserTagCheckboxes(orgData)
+        populateScheduleGrid(users)    
+        colorCells();
+        document.getElementById('org-textbox-manager').value = orgData.name
+    }
+    console.log("data refreshed")
+}
+
 function changeOrganizationName() {
     let name = document.getElementById('org-textbox-manager').value
     let jsonString = 
