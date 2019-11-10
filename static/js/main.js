@@ -1,6 +1,7 @@
 let xhttp = new XMLHttpRequest();
 const FIREBASE_URL = "http://scheduler-cutiehack.herokuapp.com"
-let schedulesReceived = null
+const scheduleTable = document.getElementById('schedule-table')
+let orgData = null
 let schedulesDictonary = {}
 let totalScheduleArray = []
 let userArray = []
@@ -22,6 +23,7 @@ function main(table) {
     const hours = ['8:00', '8:30', '9:00', '9:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', ' 1:00', ' 1:30', '2:00', '2:30', '3:00']
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
+    
     fillTable(table, hours, days)
     cells = document.getElementsByClassName('schedule-cell')
 
@@ -33,37 +35,28 @@ function main(table) {
             cell.classList.remove("selected")
         }
 
-        let scheduleList = []
-        for (let cell of cells) {
+        let scheduleList = JSON.parse(orgData.users[USER_ID].schedule);
+        console.log(scheduleList)
+        for (let i=0; i<cells.length; i++) {
+            cell = cells[i]
             let state = cell.getAttribute('data-state')
-            scheduleList.push(Number(state))
-            //cell.innerHTML = state
+            scheduleList[i] = Number(state)
+            cell.innerHTML = state
         }
 
         let jsonSchedule = JSON.stringify(scheduleList)
-        //console.log(scheduleList)
-        let jsonString = 
-            'id='+ ORG_ID + 
-            '&action='+'update_user_schedule' +
-            '&user_id='+USER_ID +
-            '&schedule='+jsonSchedule
+        let jsonString = 'id='+ ORG_ID + '&action=update_user_schedule' +
+            '&user_id='+USER_ID + '&schedule='+jsonSchedule
         sendData('POST', FIREBASE_URL+'/update', jsonString)
 
         selectedCells = []
         elemOnMousedown = null
         selectionType = null
 
-        function refresh() {
-            location.reload()
-        }
+        function refresh() { location.reload() }
         
     })
 }
-
-const scheduleTable = document.getElementById('schedule-table')
-main(scheduleTable)
-
-
 
 function populateTags(users, selectElem, userTags) {
     Object.keys(userTags).forEach(function(key) {
@@ -78,9 +71,6 @@ function populateTags(users, selectElem, userTags) {
         selectElem.append(option)
     })
 }
-
-
-
 
 function populateUserTagCheckboxes(schedules) {
     // <input id="tag-checkbox-0" type="checkbox" /> TAG_1</input><br/>
@@ -103,7 +93,7 @@ function populateUserTagCheckboxes(schedules) {
 
 function populateScheduleGrid(users, tag="all") {
     // Populating the arrays [105]
-    userArray = new Array(cells.length).fill(0);
+    let userArray = new Array(cells.length).fill(0);
     for (let i = 0; i < cells.length; i++) {
         userArray[i] = new Array();
     }
@@ -126,25 +116,17 @@ function populateScheduleGrid(users, tag="all") {
 xhttp.onload = () => {
     if (xhttp.status == 200) {
     }
+    orgData = JSON.parse(xhttp.response)
+    let users = orgData.users
 
-    schedulesReceived = JSON.parse(xhttp.response)
-    let users = schedulesReceived.users
+    main(scheduleTable)
 
-    populateTags(users, tags_select, schedulesReceived.tags)
+    populateTags(users, tags_select, orgData.tags)
 
-    
     totalScheduleArray = new Array(cells.length).fill(0);
 
-    // Initializing the userArray that contains [[userId , ...], ...]
-    userArray = new Array(cells.length).fill(0);
-    for (let i = 0; i < cells.length; i++) {
-        userArray[i] = new Array();
-    }
-
-    populateUserTagCheckboxes(schedulesReceived)
-   
+    populateUserTagCheckboxes(orgData)
     populateScheduleGrid(users)
-
     
     let rgbToHex = function (rgb) {
         let hex = Number(rgb).toString(16);
@@ -166,7 +148,9 @@ xhttp.onload = () => {
         cells[i].style = "background-color: #" + color + ";"
         cells[i].innerHTML = (number > 0 ? number : "")
     }
-    document.getElementById('org-textbox-manager').value = schedulesReceived.name
+    document.getElementById('org-textbox-manager').value = orgData.name
 }
+
+
 
 requestSchedules()

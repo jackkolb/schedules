@@ -1,11 +1,13 @@
 // table.js manages updating, drawing, and refreshing the schedule table
+let cell_counter = -1;
 
 // fillTable creates the table
 function fillTable(table, hours, days) {
     let titleRow = createTitleRow(days)
     table.append(titleRow)
+    states = JSON.parse(orgData.users[USER_ID].schedule)
     for (let row = 0; row < hours.length; row++) {
-        let hourRow = createHourRow(row, hours[row], days)
+        let hourRow = createHourRow(row, hours[row], days, states)
         table.append(hourRow)
     }
 }
@@ -23,15 +25,16 @@ function createTitleRow(days) {
     return tr
 }
 
-// createHourRow creates the header column (time of day)
-function createHourRow(row, hour, days) {
+// createHourRow creates the rows
+function createHourRow(row, hour, days, states) {
     let tr = document.createElement('tr')
     let td = document.createElement('td')
     td.innerHTML = hour
     td.classList.add('no-user-select')
     tr.append(td)
     for (let col = 0; col < days.length; col++) {
-        let cell = createCell(row, col)
+        cell_counter++
+        let cell = createCell(row, col, states[cell_counter])
         tr.append(cell)
     }
     return tr
@@ -39,6 +42,7 @@ function createHourRow(row, hour, days) {
 
 function cellOnMousedown (event) {
     elemOnMousedown = event.target
+    console.log("Set elemOnMouseDown")
 
     const state = event.target.getAttribute('data-state')
     if (Number(state) === 1) {
@@ -51,22 +55,22 @@ function cellOnMousedown (event) {
     selectedCells.push(event.target)
 }
 
-function createCell(row, col) {
+function createCell(row, col, state) {
     let td = document.createElement('td')
     td.classList.add('schedule-cell')
     td.classList.add('no-user-select')
 
-    td.setAttribute('data-state', 0)
+    td.setAttribute('data-state', state)
     td.setAttribute('data-row', row)
     td.setAttribute('data-col', col)
 
     td.addEventListener("mousedown", cellOnMousedown)
 
     td.addEventListener("mouseover", (event) => {
-        if (schedulesReceived) {
+        if (orgData) {
             elemOnMouseover = event.target
 
-            let users = schedulesReceived.users
+            let users = orgData.users
             let listString = event.target.getAttribute('data-ids')
             let array = listString.split(",")
 
