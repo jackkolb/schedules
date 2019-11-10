@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <title>Schedul.io</title>
@@ -9,19 +10,33 @@
 </head>
 
 <body>
-    <input type="text" id="schedule-input" name="schedule-input" value="My Schedule">
-    <button>Profile / User options</button>
-    <button>Manager Options (Creator only)</button>
-    
-    <br />
-    <div class="container">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs">
+                <!--Schedule Name input box-->
+                <input type="text" id="schedule-input" name="schedule-input" value="My Schedule">
+            </div>
+            <div class="col-xs">
+                <!--Profile / User Options button-->
+                <button data-toggle="tooltip" data-placement="bottom" title="Profile / User Options">
+                    <img src="images/profile-24x24.png" class="card-img-top" alt="settings-image" style="width:24px;height:24px;">
+                </button>
+            </div>
+            <div class="col-xs">
+                <!--Manager Options button-->
+                <button data-toggle="tooltip" data-placement="bottom" title="Manager Options (Creator only)"></buttonclass>
+                    <img src="images/settings-24x24.png" class="card-img-top" alt="settings-image" style="width:24px;height:24px;">
+                </button>
+            </div>
+        </div>
+
         <div class="row">
             <div class="col-xs">
                 <!--Tag Select dropdown menu-->
                 <select>
-                    <option value="red">Red</option>
-                    <option value="green">Green</option>
-                    <option value="blue">Blue</option>
+                    <option value="mechanical">Mechanical</option>
+                    <option value="electrical">Electrical</option>
+                    <option value="software">Software</option>
                 </select>
             </div>
             <div class="col-xs">
@@ -29,46 +44,47 @@
                 <button>Meeting Time</button>
             </div>
             <div class="col-xs">
-                <!--Inverse Mode button-->
-                <button>Inverse Mode
-                    <img src="images/positive-negative-64x64.png" class="card-img-top" alt="inverse-image" style="width:24px;height:24px;">
+                <!--Flip button-->
+                <button data-toggle="tooltip" data-placement="bottom" title="Flip Schedule!">
+                    <img src="images/flip-24x24.png" class="card-img-top" alt="settings-image" style="width:24px;height:24px;">
                 </button>
             </div>
-            
         </div>
+
+        <div class="row">
+            <div class="col-xs">
+                <!--Schedule table-->
+                <table id="schedule-table"></table>
+            </div>
+        </div>
+
+        
     </div>
 
-    <table id="schedule-table"></table>
-    
-    <br />
-    <div class="container">
-        <div class="row">
-            <!--This is the Mouseover Cell box-->
-            <div class="col-xs">
-                <div class="card" style="width: 18rem;">
-                    <!--img src="..." class="card-img-top" alt="..."-->
-                    <div class="card-body">
-                        <h5 class="card-title">Mouseover Cell</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        <!--a href="#" class="btn btn-primary">Go somewhere</a-->
-                    </div>
+    <div class="fixed-bottom">
+        <div class="container-fluid"></div>
+            <!--This is the Filters box-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-title">Filters</div>
+                    <select>
+                        <option value="mechanical">Mechanical</option>
+                        <option value="electrical">Electrical</option>
+                        <option value="software">Software</option>
+                    </select>
+                    <br />
+                    <!-- <img src="..." class="card-img-top" alt="...">
+                                                    <img src="..." class="card-img-top" alt="...">
+                                                    <img src="..." class="card-img-top" alt="..."> -->
                 </div>
             </div>
-            <!--This is the Filters box-->
-            <div class="col-xs">
-                <div class="card" style="width: 18rem;">
-                    <div class="card-body">
-                        <h5 class="card-title">Filters</h5>
-                        <select>
-                            <option value="red">Red</option>
-                            <option value="green">Green</option>
-                            <option value="blue">Blue</option>
-                        </select>
-                        <br />
-                        <!-- <img src="..." class="card-img-top" alt="...">
-                        <img src="..." class="card-img-top" alt="...">
-                        <img src="..." class="card-img-top" alt="..."> -->
-                    </div>
+            
+            <!--This is the Mouseover Cell box-->
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-title"></div>
+                    <p class="card-text">(user data)</p>
+                    <!--a href="#" class="btn btn-primary">Go somewhere</a-->
                 </div>
             </div>
         </div>
@@ -82,6 +98,6 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
     <script type="text/javascript" src="js/main.js"></script>
-
 </body>
+
 </html>
