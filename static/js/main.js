@@ -1,8 +1,8 @@
 let xhttp = new XMLHttpRequest();
 console.log(xhttp)
 const FIREBASE_URL = "http://scheduler-cutiehack.herokuapp.com"
-const ORG_ID = "1"
-const USER_ID = "1"
+const ORG_ID = {{ org_name }}
+const USER_ID = {{ user_id }}
 let schedulesReceived = null
 let schedulesDictonary = {}
 //"http://10.28.92.95:/org_data?id=1"
@@ -72,7 +72,7 @@ function cellOnMousedown (event) {
 
 function createCell(row, col) {
     let td = document.createElement('td')
-    td.innerHTML = "("+row+","+col+")"
+    //td.innerHTML = "("+row+","+col+")"
     td.classList.add('schedule-cell')
     td.classList.add('no-user-select')
 
@@ -83,19 +83,23 @@ function createCell(row, col) {
     td.addEventListener("mousedown", cellOnMousedown)
 
     td.addEventListener("mouseover", (event) => {
-        elemOnMouseover = event.target
+        if (schedulesReceived) {
+            elemOnMouseover = event.target
 
-        let users = schedulesReceived.users
+            let users = schedulesReceived.users
+
+            let listString = event.target.getAttribute('data-ids')
+           //listString = event.target.innerHTML
 
 
-        let listString = event.target.innerHTML
+            let array = listString.split(",")
 
-        let array = listString.split(",")
-
-         cell_info.innerHTML = ""
-        for (let user in array) {
-             cell_info.innerHTML += users[user].name + ", "
+             cell_info.innerHTML = ""
+            for (let user in array) {
+                 cell_info.innerHTML += users[user].name + ", "
+            }
         }
+           
         
     })
     return td
@@ -140,9 +144,15 @@ function paintMouseoverCells(event) {
             if (row >= lowRow && row <= highRow && col >= lowCol && col <= highCol) {
                 selectedCells.push(cell)
                 paintCell(cell, selectionType)
+
             } else {
                 paintCell(cell, state)
             }
+            cell.classList.remove("selected")
+        }
+
+        for (let cell of selectedCells) {
+            cell.classList.add("selected")
         }
     }
 }
@@ -169,36 +179,58 @@ function main(table) {
     document.addEventListener("mouseup", (event) => {
         for (let cell of selectedCells) {
             setCell(cell, selectionType)
+            cell.classList.remove("selected")
         }
 
         let scheduleList = []
         for (let cell of cells) {
             let state = cell.getAttribute('data-state')
             scheduleList.push(Number(state))
+            //cell.innerHTML = state
         }
 
         let jsonSchedule = JSON.stringify(scheduleList)
-        let jsonData = {
-            'id': ORG_ID,
-            'action': "update_user_schedule",
-            'user_id': USER_ID,
-            'schedule': jsonSchedule
-        }
-        //sendData('GET', FIREBASE_URL+'/update?id='+ORG_ID+"&action=update_user_schedule&user_id="+USER_ID+"&schedule="+jsonSchedule)
-        sendData('POST', FIREBASE_URL+'/update', jsonData)
+        console.log(scheduleList)
+        let jsonString = 
+            'id='+ ORG_ID + 
+            '&action='+'update_user_schedule' +
+            '&user_id='+USER_ID +
+            '&schedule='+jsonSchedule
+        sendData('POST', FIREBASE_URL+'/update', jsonString)
 
         selectedCells = []
         elemOnMousedown = null
         selectionType = null
+
+        function refresh() {
+            location.reload()
+        }
+
+        setTimeout(refresh, 100)
+        
     })
 }
 
 const scheduleTable = document.getElementById('schedule-table')
 main(scheduleTable)
 
-function sendData(method, url, jsonData) {
-    xhttp.open(method, url)
-    xhttp.send(jsonData)
+function sendData(method, url, jsonString) {
+    var url = FIREBASE_URL + "/update"
+    var params = jsonString//"name=orggggggg&action=add_org";
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", url, true);
+    //Send the proper header information along with the request
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhr.send(params);
+
+    console.log("sendData")
+    return;
+
+
+    // xhttp.open(method, url)
+    // //xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    // xhttp.send(jsonData)
+    // console.log(jsonData)
 }
 
 
@@ -245,22 +277,34 @@ function toggleManager() {
 
 function changeOrganizationName() {
     let name = document.getElementById('org-textbox-manager').value
-    let jsonData = {
-        'id' : ORG_ID,
-        'action' : "change_org_name",
-        'name' : name
-    }
-    sendData('POST', FIREBASE_URL+'/update', jsonData)
+    let jsonString = 
+            'id='+ ORG_ID + 
+            '&action='+'change_org_name' +
+            '&name='+name
+        sendData('POST', FIREBASE_URL+'/update', jsonString)
+    // let jsonData = {
+    //     'id' : ORG_ID,
+    //     'action' : "change_org_name",
+    //     'name' : name
+    // }
+    // sendData('POST', FIREBASE_URL+'/update', jsonData)
 }
 
 function addTag() {
     let name = document.getElementById('tag-textbox-manager').value
-    let jsonData = {
-        'id' : ORG_ID,
-        'action' : "add_tag",
-        'tag' : name
-    }
-    sendData('POST', FIREBASE_URL+'/update', jsonData)
+
+    let jsonString = 
+        'id='+ ORG_ID + 
+        '&action='+'add_tag' +
+        '&tag='+name
+    sendData('POST', FIREBASE_URL+'/update', jsonString)
+
+    // let jsonData = {
+    //     'id' : ORG_ID,
+    //     'action' : "add_tag",
+    //     'tag' : name
+    // }
+    // sendData('POST', FIREBASE_URL+'/update', jsonData)
 }
 
 function populateUserTagCheckboxes(schedules) {
@@ -289,7 +333,7 @@ function populateScheduleGrid(users, tag="all") {
     for (let i = 0; i < cells.length; i++) {
         userArray[i] = new Array();
     }
-
+    console.log(tag)
     for (let user in users) {
         let userScheduleArray = JSON.parse(users[user].schedule)
         for (let i = 0; i < userScheduleArray.length; i++) {
@@ -304,8 +348,9 @@ function populateScheduleGrid(users, tag="all") {
     //console.log(userArray)
 
     for (let i = 0; i < cells.length; i++) {
-        cells[i].innerHTML = userArray[i]
+        cells[i].setAttribute('data-ids', userArray[i])
     }
+
 }
 
 xhttp.onload = () => {
@@ -341,7 +386,9 @@ xhttp.onload = () => {
     };
     
 
-    let totalUsers = Math.max(...totalScheduleArray)
+    //let totalUsers = Math.max(...totalScheduleArray)
+    let totalUsers = Object.keys(users).length
+    console.log(users)
     for (let i = 0; i < cells.length; i++) {
         let number = totalScheduleArray[i]
         
@@ -349,6 +396,7 @@ xhttp.onload = () => {
         let scale = 255 - Math.round(proportion * 255)
         let color = rgbToHex(scale) + rgbToHex(scale) + rgbToHex(255)
         cells[i].style = "background-color: #" + color + ";"
+        cells[i].innerHTML = (number > 0 ? number : "")
     }
 //    cells[0].style = "background-color: red;"
 

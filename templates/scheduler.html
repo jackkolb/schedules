@@ -4,10 +4,14 @@
     <meta charset="utf-8">
     <title>Schedul.io</title>
     <link rel="stylesheet" type="text/css" href="../static/styles/main.css">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 
 <body>
-    <input type="text" id="schedule-input" name="schedule-input" value="My Schedule">
+    <div id="container">
+        <h1 align="center">Schedul.io</h1>
+        <input type="text" id="schedule-input" name="schedule-input" value="My Schedule">
     <button id="toggle-user" onclick="toggleUserOptions();" >Profile / User options</button>
     <button id="toggle-manager" onclick="toggleManager();">Manager Options (Creator only)</button>
     
@@ -30,6 +34,7 @@
         </form>
     </div>
     <select id="tags-select"> <!--dropdown menu-->
+        <option value="all">All</option>
         <!-- <option value="red">Red</option> -->
 
     </select>
@@ -40,6 +45,8 @@
     <div id="cell-info">
         HOVER INFO
     </div>
+    </div>
+    
 
     <script type="text/javascript" src="../static/js/main.js"></script>
 </body>

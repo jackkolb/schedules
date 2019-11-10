@@ -1,9 +1,52 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="utf-8">
     <title>Schedul.io</title>
+    <script type="text/javascript">
+let xhttp = new XMLHttpRequest();
+const FIREBASE_URL = "http://scheduler-cutiehack.herokuapp.com"
+
+xhttp.onload = () => {
+    if (xhttp.status == 200) {
+        //console.log(xhttp.response)
+    }
+    console.log(xhttp)
+    organization_id = JSON.parse(xhttp.response)
+
+}
+
+function createOrganization() {
+
+    var url = FIREBASE_URL + "/update"
+    var params = "name=orggggggg&action=add_org";
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", url, true);
+    //Send the proper header information along with the request
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhr.send(params);
+    return;
+
+    // function sendData(method, url, jsonData) {
+    //     xhttp.open(method, url, true)
+    //     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    //     xhttp.send(jsonData)
+    // }
+
+    // let jsonData = {
+    //     'name' : "untitled-organization",
+    //     'action' : "add_org",
+
+    // }
+    // sendData('POST', FIREBASE_URL+'/update', jsonData)
+}
+
+function create() {
+    createOrganization()
+}
+    </script>
 </head>
 <body>
-
+    <button onclick="create();">Create New Organization Schedule</button>
 </body>
 </html>
