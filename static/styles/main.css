@@ -4,16 +4,29 @@ body {
 
 }
 
+#container {
+		margin: 5%;
+
+	width: 90%;
+}
+
 #schedule-table {
-	background-color: pink;
+	background-color: lightgreen;
+	padding: 0;
+	width: 100%
 }
 
 .schedule-cell {
-	background-color: lightblue;
+	background-color: whitesmoke;
 	box-sizing: border-box;
 }
 .schedule-cell:hover  {
 	box-sizing: border-box;
+}
+
+.selected {
+	
+	border: 1px solid gray;
 }
 
 .no-user-select {
@@ -22,12 +35,4 @@ body {
    -khtml-user-select: none; /* Konqueror HTML */
    -moz-user-select: none; /* Firefox */
    -ms-user-select: none; /* Internet Explorer/Edge */
-}
-
-.cell-red {
-	
-}
-
-.cell-green {
-	background-color: green;
 }

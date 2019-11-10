@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Schedul.io</title>
+    <link rel="stylesheet" type="text/css" href="../static/styles/main.css">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+
+<body>
+    <div id="container">
+        <h1 align="center">Schedul.io</h1>
+        <input type="text" id="schedule-input" name="schedule-input" value="My Schedule">
+    <button id="toggle-user" onclick="toggleUserOptions();" >Profile / User options</button>
+    <button id="toggle-manager" onclick="toggleManager();">Manager Options (Creator only)</button>
+    
+    <br />
+    <div id="user-menu">
+        <label>Username</label>
+        <input type="text" name="username" value="---">
+        <div id="user-tags">
+            
+        </div>
+        <button onclick="updateUserInfo();">Update!</button>
+    </div>
+    <div id="manager-menu" style="display: none">
+        <label>Organization </label><input type="text" id="org-textbox-manager" name="org-name" />
+        <button onclick="changeOrganizationName();">Update</button>
+        <form method="post">
+            <label>Tag </label>
+            <input type="text" id="tag-textbox-manager" name="tag-textbox" />
+            <input type="submit" onclick="addTag();" id="tag-submit-manager" name="submit-tag" value="Submit Tag!">
+        </form>
+    </div>
+    <select id="tags-select"> <!--dropdown menu-->
+        <option value="all">All</option>
+        <!-- <option value="red">Red</option> -->
+
+    </select>
+    <button>Meeting Time</button>
+    <button>Flip!</button>
+    <table id="schedule-table"></table>
+
+    <div id="cell-info">
+        HOVER INFO
+    </div>
+    </div>
+    
+
+    <script type="text/javascript" src="../static/js/main.js"></script>
+</body>
+</html>
