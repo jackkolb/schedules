@@ -1,3 +1,10 @@
+let xhttp = new XMLHttpRequest();
+console.log(xhttp)
+const FIREBASE_URL = "http://scheduler-cutiehack.herokuapp.com"
+const ORG_ID = "1"
+const USER_ID = "1"
+//"http://10.28.92.95:/org_data?id=1"
+
 let elemOnMousedown = null
 let elemOnMouseover = null
 let selectionType = null
@@ -101,8 +108,6 @@ function paintMouseoverCells(event) {
         const highCol = Math.max(mouseDownCol, mouseOverCol)
         const lowCol  = Math.min(mouseDownCol, mouseOverCol)
 
-        
-        
         selectedCells = []
         for (let cell of cells) {
             const state = cell.getAttribute('data-state')
@@ -141,24 +146,46 @@ function main(table) {
             setCell(cell, selectionType)
         }
 
+        let scheduleList = []
+        for (let cell of cells) {
+            let state = cell.getAttribute('data-state')
+            scheduleList.push(Number(state))
+        }
 
+        let jsonSchedule = JSON.stringify(scheduleList)
+        let jsonData = {
+            'id': ORG_ID,
+            'action': "update_user_schedule",
+            'user_id': USER_ID,
+            'schedule': jsonSchedule
+        }
+        //sendData('GET', FIREBASE_URL+'/update?id='+ORG_ID+"&action=update_user_schedule&user_id="+USER_ID+"&schedule="+jsonSchedule)
+        sendData('POST', FIREBASE_URL+'/update', jsonData)
 
         selectedCells = []
         elemOnMousedown = null
         selectionType = null
+
+        console.log(jsonSchedule)
+        console.log(jsonData)
     })
 }
 
 const scheduleTable = document.getElementById('schedule-table')
 main(scheduleTable)
 
-let xhttp = new XMLHttpRequest();
+function sendData(method, url, jsonData) {
+    xhttp.open(method, url)
+    xhttp.send(jsonData)
+}
+
+
 xhttp.onreadystatechange = () => {
-    if (this.status == 200) {
-        console.log("request!")
+    if (xhttp.status == 200) {
+        console.log(xhttp.response)
     }
 }
 
-const FIREBASE_URL = "http://10.28.92.95/org_data?id=1"
-xhttp.open('GET', FIREBASE_URL, true)
+
+xhttp.open('GET', FIREBASE_URL+"/org_data?id=1", true)
 xhttp.send() // send request to the server
