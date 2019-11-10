@@ -15,6 +15,13 @@ let selectionType = null
 let selectedCells = []
 let cells = []
 
+let cell_info = document.getElementById('cell-info')
+let tags_select = document.getElementById('tags-select')
+let manager_menu = document.getElementById('manager-menu')
+
+let tag_textbox_manager = document.getElementById('tag-textbox-manager')
+let tag_submit_manager = document.getElementById('tag-submit-manager')
+
 function fillTable(table, hours, days) {
     let titleRow = createTitleRow(days)
     table.append(titleRow)
@@ -77,6 +84,19 @@ function createCell(row, col) {
 
     td.addEventListener("mouseover", (event) => {
         elemOnMouseover = event.target
+
+        let users = schedulesReceived.users
+
+
+        let listString = event.target.innerHTML
+
+        let array = listString.split(",")
+
+         cell_info.innerHTML = ""
+        for (let user in array) {
+             cell_info.innerHTML += users[user].name + ", "
+        }
+        
     })
     return td
 }
@@ -100,7 +120,6 @@ function paintCell(elem, state) {
 }
 
 function paintMouseoverCells(event) {
-    console.log(elemOnMousedown)
     if (elemOnMousedown) {
         const mouseDownRow = elemOnMousedown.getAttribute('data-row')
         const mouseDownCol = elemOnMousedown.getAttribute('data-col')
@@ -143,6 +162,8 @@ function main(table) {
     fillTable(table, hours, days)
     cells = document.getElementsByClassName('schedule-cell')
 
+    
+
     document.addEventListener("mouseover", paintMouseoverCells)
     document.addEventListener("mousedown", paintMouseoverCells)
     document.addEventListener("mouseup", (event) => {
@@ -169,9 +190,6 @@ function main(table) {
         selectedCells = []
         elemOnMousedown = null
         selectionType = null
-
-        console.log(jsonSchedule)
-        console.log(jsonData)
     })
 }
 
@@ -183,10 +201,6 @@ function sendData(method, url, jsonData) {
     xhttp.send(jsonData)
 }
 
-function fillAggregateArray(users) {
-
-}
-
 
 function requestSchedules() {
     const url = FIREBASE_URL+'/org_data?id='+ORG_ID
@@ -194,36 +208,152 @@ function requestSchedules() {
     xhttp.send()
 }
 
-xhttp.onload = () => {
-    console.log("ONLOAD().....")
-    if (xhttp.status == 200) {
-        console.log(xhttp.response)
+function populateTags(users, selectElem, userTags) {
+    Object.keys(userTags).forEach(function(key) {
+        let option = document.createElement('option')
+        option.value = key
+        option.innerHTML = userTags[key].name
+        option.onclick = (event) => {
+            let value = event.target.value
+            populateScheduleGrid(users, value)
+            console.log(event.target)
+        }
+        selectElem.append(option)
+    })
+}
+
+function toggleUserOptions() {
+
+    let elem = document.getElementById('user-menu')
+    let visibility = elem.style.display
+    if (visibility == "block")
+        elem.style.display = "none"
+    else
+        elem.style.display = "block"
+}
+
+
+function toggleManager() {
+
+    let elem = document.getElementById('manager-menu')
+    let visibility = elem.style.display
+    if (visibility == "block")
+        elem.style.display = "none"
+    else
+        elem.style.display = "block"
+}
+
+function changeOrganizationName() {
+    let name = document.getElementById('org-textbox-manager').value
+    let jsonData = {
+        'id' : ORG_ID,
+        'action' : "change_org_name",
+        'name' : name
     }
+    sendData('POST', FIREBASE_URL+'/update', jsonData)
+}
 
-    schedulesReceived = JSON.parse(xhttp.response)
+function addTag() {
+    let name = document.getElementById('tag-textbox-manager').value
+    let jsonData = {
+        'id' : ORG_ID,
+        'action' : "add_tag",
+        'tag' : name
+    }
+    sendData('POST', FIREBASE_URL+'/update', jsonData)
+}
 
-    let users = schedulesReceived.users
-    totalScheduleArray = new Array(cells.length).fill(0);
+function populateUserTagCheckboxes(schedules) {
+    // <input id="tag-checkbox-0" type="checkbox" /> TAG_1</input><br/>
+    let tags = schedules.tags
+    let checkboxesElem = document.getElementById('user-tags')
+    for (let tag in tags) {
+        let input = document.createElement('input')
+        let label = document.createElement('label')
+        let br = document.createElement('br')
+        input.id = "tag-checkbox-" + tag
+        input.type = "checkbox"
 
+        label.innerHTML = tags[tag].name
+
+        checkboxesElem.append(input)
+        checkboxesElem.append(label)
+        checkboxesElem.append(br)
+    }
+    
+}
+
+function populateScheduleGrid(users, tag="all") {
+    // Populating the arrays [105]
     userArray = new Array(cells.length).fill(0);
     for (let i = 0; i < cells.length; i++) {
         userArray[i] = new Array();
     }
-   
+
     for (let user in users) {
         let userScheduleArray = JSON.parse(users[user].schedule)
         for (let i = 0; i < userScheduleArray.length; i++) {
-            if (userScheduleArray[i] == 1) {
+            if (userScheduleArray[i] == 1 && (tag == "all" || users[user].tags.includes(tag)) ) {
                 totalScheduleArray[i] += 1
                 userArray[i].push(user)
             }
         }
     }
-    console.log(userArray)
+
+
+    //console.log(userArray)
 
     for (let i = 0; i < cells.length; i++) {
         cells[i].innerHTML = userArray[i]
     }
+}
+
+xhttp.onload = () => {
+    if (xhttp.status == 200) {
+        //console.log(xhttp.response)
+    }
+
+    schedulesReceived = JSON.parse(xhttp.response)
+    let users = schedulesReceived.users
+
+    populateTags(users, tags_select, schedulesReceived.tags)
+
+    
+    totalScheduleArray = new Array(cells.length).fill(0);
+
+    // Initializing the userArray that contains [[userId , ...], ...]
+    userArray = new Array(cells.length).fill(0);
+    for (let i = 0; i < cells.length; i++) {
+        userArray[i] = new Array();
+    }
+
+    populateUserTagCheckboxes(schedulesReceived)
+   
+    populateScheduleGrid(users)
+
+    
+    let rgbToHex = function (rgb) {
+        let hex = Number(rgb).toString(16);
+        if (hex.length < 2) {
+            hex = "0" + hex;
+        }
+        return hex;
+    };
+    
+
+    let totalUsers = Math.max(...totalScheduleArray)
+    for (let i = 0; i < cells.length; i++) {
+        let number = totalScheduleArray[i]
+        
+        let proportion = (number/totalUsers)
+        let scale = 255 - Math.round(proportion * 255)
+        let color = rgbToHex(scale) + rgbToHex(scale) + rgbToHex(255)
+        cells[i].style = "background-color: #" + color + ";"
+    }
+//    cells[0].style = "background-color: red;"
+
+
+    document.getElementById('org-textbox-manager').value = schedulesReceived.name
 }
 
 requestSchedules()
