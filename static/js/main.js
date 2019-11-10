@@ -1,6 +1,6 @@
 let xhttp = new XMLHttpRequest();
 const FIREBASE_URL = "http://scheduler-cutiehack.herokuapp.com"
-const scheduleContainer = document.getElementById('schedule-container')
+
 let orgData = null
 let users = null
 let schedulesDictonary = {}
@@ -13,7 +13,6 @@ let selectionType = null
 let selectedCells = []
 let cells = []
 
-let cell_info = document.getElementById('cell-info')
 let tags_select = document.getElementById('tags-select')
 let manager_menu = document.getElementById('manager-menu')
 
@@ -21,11 +20,12 @@ let tag_textbox_manager = document.getElementById('tag-textbox-manager')
 let tag_submit_manager = document.getElementById('tag-submit-manager')
 
 function main() {
-    const hours = ['8:00', '8:30', '9:00', '9:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', ' 1:00', ' 1:30', '2:00', '2:30', '3:00']
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+    const hourList = ['8:00', '8:30', '9:00', '9:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', ' 1:00', ' 1:30', '2:00', '2:30', '3:00']
+    const dayList = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+    const userScheduleList = JSON.parse(orgData.users[USER_ID].schedule)
 
-    const stateList = JSON.parse(orgData.users[USER_ID].schedule)
-    let table = createScheduleTable("schedule-table", hours, days, stateList)
+    const table = createScheduleTable("schedule-table", hourList, dayList, userScheduleList)
+    const scheduleContainer = document.getElementById('schedule-container')
     scheduleContainer.append(table)
 
     cells = document.getElementsByClassName('schedule-cell')

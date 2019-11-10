@@ -3,37 +3,41 @@
 */
 
 class Test {
-	
+	constructor() {
+		this.pass = "."
+		this.fail = "F"
+		this.error = "E"
+	}
 
 	test_createScheduleTable() {
 		let t1 = createScheduleTable("id001", ["h1","h2"], ["d1","d2"], [0,1,0,1])
 		let t2 = createScheduleTable("id001", ["h1"], ["d1"], [0])
 		let t3 = createScheduleTable("", [], [], [])
-		console.log(t1)
-		console.log(t2)
-		console.log(t3)
+
+		return t1.children.length === 3 ? this.pass : this.fail
 	}
 	test_createTitleRow() {
-		let tr1 = createTitleRow(["d1, d2"])
-		let tr2 = createTitleRow(["d1"])
-		let tr3 = createTitleRow([])
-		console.log(tr1)
-		console.log(tr2)
-		console.log(tr3)
+		let t1 = createTitleRow(["d1, d2"])
+		let t2 = createTitleRow(["d1"])
+		let t3 = createTitleRow([])
+		return t1.children.length === 2 ? this.pass : this.fail
 	}
 
 	test_createCell() {
-		let td1 = createCell(0,0,0)
-		console.log(td1)
+		let t1 = createCell(0,0,0)
+		return t1.getAttribute('data-state') === "0" ? this.pass : this.fail
 	}
 
 	test() {
-		
-		this.test_createScheduleTable()
-		this.test_createTitleRow()
-		this.test_createCell()
+		console.log("==== Running tests ====")
+		//console.log("'.' is pass, 'F' is fail, 'E' is error")
+		let results = "Results "
+		results += this.test_createScheduleTable()
+		results += this.test_createTitleRow()
+		results += this.test_createCell()
+		console.log(results)
 	}
 }
 
-let test = new Test()
+const test = new Test()
 test.test()

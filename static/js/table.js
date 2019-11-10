@@ -12,7 +12,6 @@ function colorCells() {
         cells[i].style = "background-color: #" + color + ";"
         cells[i].innerHTML = number //(number > 0 ? number : "")
     }
-    console.log("Colored cells")
 }
 
 function paintMouseoverCells(event) {
@@ -171,16 +170,18 @@ function createCell(row, col, state) {
 function cellOnMouseover(event) {
     if (orgData) {
         elemOnMouseover = event.target
-
-        let users = orgData.users
-        let listString = event.target.getAttribute('data-ids')
-        let array = listString.split(",")
-
-        cell_info.innerHTML = ""
-        for (let user in array) {
-             cell_info.innerHTML += users[user].name + ", "
-        }
+        const userIdList = elemOnMouseover.getAttribute('data-ids').split(",")
+        updateMouseoverTooltip('cell-info', userIdList, orgData.users)
     }
+}
+
+function updateMouseoverTooltip(elemId, userIdList, usersDictionary) {
+    let concatenatedNames = ""
+    for (let userId in userIdList) {
+         concatenatedNames += usersDictionary[userId].name + ", "
+    }
+    const cell_info = document.getElementById(elemId)
+    cell_info.innerHTML = concatenatedNames
 }
 
 function cellOnMousedown (event) {
