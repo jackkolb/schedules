@@ -28,9 +28,10 @@ def get_org_data():
 def update():
     if "id" in request.form.keys():
         org_id = request.form["id"]
+        print("org_id" + org_id)
     action = request.form["action"]
     print("action" + action)
-    print("org_id" + org_id)
+    
 
     if action == "add_org":
         name = request.form["name"]
