@@ -20,7 +20,7 @@ def add_org(name):
             "tags": {},
             "users": {}
         })
-        return "true"
+        return org_id
     except Exception as e:
         print(e)
         return "false"

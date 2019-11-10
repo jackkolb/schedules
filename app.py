@@ -26,10 +26,11 @@ def get_org_data():
 @app.route("/update", methods=["POST"])
 @cross_origin()
 def update():
-    org_id = request.form["id"]
+    if "id" in request.form.keys():
+        org_id = request.form["id"]
     action = request.form["action"]
     print("action" + action)
-    print("action" + org_id)
+    print("org_id" + org_id)
 
     if action == "add_org":
         name = request.form["name"]
