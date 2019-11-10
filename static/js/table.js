@@ -1,5 +1,5 @@
 // table.js manages updating, drawing, and refreshing the schedule table
-//let cell_counter = -1;
+
 
 function colorCells() {
     let totalUsers = Object.keys(users).length
@@ -14,37 +14,46 @@ function colorCells() {
     }
 }
 
+/*
+    paintMouseoverCells()
+    Get the (row,col) of the mousedown cell and the (row,col) of the mouseover cell to create a "bounding box". 
+    The mousedown cell and all cells within this bounding box have their 'data-state' changed.
+    The new state is the opposite of the mousedown cell's previous state.
+    arguments:
+        event: HTML object
+    return:
+        undefined
+*/
 function paintMouseoverCells(event) {
-    if (elemOnMousedown) {
-        const mouseDownRow = elemOnMousedown.getAttribute('data-row')
-        const mouseDownCol = elemOnMousedown.getAttribute('data-col')
-        const mouseOverRow = elemOnMouseover.getAttribute('data-row')
-        const mouseOverCol = elemOnMouseover.getAttribute('data-col')
+    if (elemOnMousedown === null) return;
+    
+    const mouseDownRow = elemOnMousedown.getAttribute('data-row')
+    const mouseDownCol = elemOnMousedown.getAttribute('data-col')
+    const mouseOverRow = elemOnMouseover.getAttribute('data-row')
+    const mouseOverCol = elemOnMouseover.getAttribute('data-col')
 
-        const highRow = Math.max(mouseDownRow, mouseOverRow)
-        const lowRow  = Math.min(mouseDownRow, mouseOverRow)
-        const highCol = Math.max(mouseDownCol, mouseOverCol)
-        const lowCol  = Math.min(mouseDownCol, mouseOverCol)
+    const rowMax = Math.max(mouseDownRow, mouseOverRow)
+    const rowMin  = Math.min(mouseDownRow, mouseOverRow)
+    const colMax = Math.max(mouseDownCol, mouseOverCol)
+    const colMin  = Math.min(mouseDownCol, mouseOverCol)
 
-        selectedCells = []
-        for (let cell of cells) {
-            const state = cell.getAttribute('data-state')
-            const row = cell.getAttribute('data-row')
-            const col = cell.getAttribute('data-col')
-
-            if (row >= lowRow && row <= highRow && col >= lowCol && col <= highCol) {
-                selectedCells.push(cell)
-                paintCell(cell, selectionType)
-
-            } else {
-                paintCell(cell, state)
-            }
-            cell.classList.remove("selected")
+    selectedCells = []
+    for (let i = cells.length - 1; i >= 0; i--) {
+        const row = cells[i].getAttribute('data-row')
+        const col = cells[i].getAttribute('data-col')
+        const insideBoundingBox = row >= rowMin && row <= rowMax && col >= colMin && col <= colMax
+        if (insideBoundingBox) {
+            selectedCells.push(cells[i])
+            paintCell(cells[i], selectionType)
+        } else {
+            const state = cells[i].getAttribute('data-state')
+            paintCell(cells[i], state)
         }
+        cells[i].classList.remove("selected")
+    }
 
-        for (let cell of selectedCells) {
-            cell.classList.add("selected")
-        }
+    for (let i = selectedCells.length-1; i >= 0; i--) {
+        selectedCells[i].classList.add("selected")
     }
 }
 
@@ -162,7 +171,7 @@ function createCell(row, col, state) {
     td.setAttribute('data-col', col)
 
     td.addEventListener("mousedown", cellOnMousedown)
-    td.addEventListener("mouseup", cellOnMouseUp)
+    td.addEventListener("mouseup", cellOnMouseup)
     td.addEventListener("mouseover", cellOnMouseover)
     return td
 }
@@ -175,13 +184,25 @@ function cellOnMouseover(event) {
     }
 }
 
-function updateMouseoverTooltip(elemId, userIdList, usersDictionary) {
+/*
+    updateMouseoverTooltip()
+    Updates the innerHTML of the tooltip based on the given userIdList and usersDictonary.
+    arguments:
+        tooltipId: string
+        userIdList: list of strings
+        usersDictionary: dictionary (each item in userIdList must be a key)
+            key: string
+            value: dictionary (must contain "name" key)
+    return:
+        undefined
+*/
+function updateMouseoverTooltip(tooltipId, userIdList, usersDictionary) {
     let concatenatedNames = ""
     for (let userId in userIdList) {
          concatenatedNames += usersDictionary[userId].name + ", "
     }
-    const cell_info = document.getElementById(elemId)
-    cell_info.innerHTML = concatenatedNames
+    const tooltip = document.getElementById(tooltipId)
+    tooltip.innerHTML = concatenatedNames
 }
 
 function cellOnMousedown (event) {
@@ -198,10 +219,10 @@ function cellOnMousedown (event) {
     selectedCells.push(event.target)
 }
 
-function cellOnMouseUp (event) {
-    for (let cell of selectedCells) {
-        setCell(cell, selectionType)
-        cell.classList.remove("selected")
+function cellOnMouseup (event) {
+    for (let i = selectedCells.length-1; i >= 0; i--) {
+        setCell(selectedCells[i], selectionType)
+        selectedCells[i].classList.remove("selected")
     }
 
     let scheduleList = JSON.parse(orgData.users[USER_ID].schedule);
