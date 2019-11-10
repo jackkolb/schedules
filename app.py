@@ -15,6 +15,7 @@ def index():
 @cross_origin()
 def get_org():
     org_id = request.args.get("id")
+    print(org_id)
     return render_template("scheduler.html", org_id=org_id, user_id=1)
 
 @app.route("/org_data", methods=["GET"])
