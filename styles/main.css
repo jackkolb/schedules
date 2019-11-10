@@ -1,10 +1,33 @@
 body {
 	background-color: lightyellow;
+	border-spacing: 0;
+
+}
+
+#schedule-table {
+	background-color: pink;
 }
 
 .schedule-cell {
 	background-color: lightblue;
+	box-sizing: border-box;
 }
 .schedule-cell:hover  {
-	background-color: lightgreen;
+	box-sizing: border-box;
+}
+
+.no-user-select {
+    user-select: none; /* supported by Chrome and Opera */
+   -webkit-user-select: none; /* Safari */
+   -khtml-user-select: none; /* Konqueror HTML */
+   -moz-user-select: none; /* Firefox */
+   -ms-user-select: none; /* Internet Explorer/Edge */
+}
+
+.cell-red {
+	
+}
+
+.cell-green {
+	background-color: green;
 }
