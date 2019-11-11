@@ -19,6 +19,8 @@ let manager_menu = document.getElementById('manager-menu')
 let tag_textbox_manager = document.getElementById('tag-textbox-manager')
 let tag_submit_manager = document.getElementById('tag-submit-manager')
 
+
+
 function main() {
     const hourList = ['8:00', '8:30', '9:00', '9:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', ' 1:00', ' 1:30', '2:00', '2:30', '3:00']
     const dayList = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
@@ -66,6 +68,35 @@ function populateUserTagCheckboxes(schedules) {
         checkboxesElem.append(br)
     }    
 }
+
+xhttp.onload = () => {
+    if (xhttp.status == 200) {
+    }
+    orgData = JSON.parse(xhttp.response)
+    users = orgData.users
+
+    main()
+
+    populateTags(users, tags_select, orgData.tags)
+
+    totalScheduleArray = new Array(cells.length).fill(0);
+
+    populateUserTagCheckboxes(orgData)
+    populateScheduleGrid(users)    
+    colorCells();
+    document.getElementById('org-textbox-manager').value = orgData.name
+
+    console.log(orgData)
+
+    const div = document.getElementById('debug-container')
+    div.append(convertToHTML(orgData))
+}
+
+requestSchedules()
+
+// =================================
+// Debug-only functions
+// =================================
 
 function convertToHTML(data) {
     let ul = document.createElement('ul')
@@ -116,7 +147,7 @@ function createUsersHTML(dict) {
 
         let span = document.createElement('span')
         span.style = "font-size: 10px;"
-        span.innerHTML = dict[key].schedule
+        span.innerHTML = typeof(dict[key].schedule)
         li_schedule.append(span)
         ul_key.append(li_schedule)
 
@@ -148,30 +179,3 @@ function createTagsHTML(dict) {
     })
     return ul
 }
-
-xhttp.onload = () => {
-    if (xhttp.status == 200) {
-    }
-    orgData = JSON.parse(xhttp.response)
-    users = orgData.users
-
-    main()
-
-    populateTags(users, tags_select, orgData.tags)
-
-    totalScheduleArray = new Array(cells.length).fill(0);
-
-    populateUserTagCheckboxes(orgData)
-    populateScheduleGrid(users)    
-    colorCells();
-    document.getElementById('org-textbox-manager').value = orgData.name
-
-    console.log(orgData)
-
-    const div = document.getElementById('debug-container')
-    div.append(convertToHTML(orgData))
-}
-
-
-
-requestSchedules()

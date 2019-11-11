@@ -5,8 +5,7 @@ body {
 }
 
 #container {
-		margin: 5%;
-
+	margin: 5%;
 	width: 90%;
 }
 
@@ -14,6 +13,11 @@ body {
 	background-color: lightgreen;
 	padding: 0;
 	width: 100%
+}
+
+#schedule-table td {
+	height: 5px;
+	font-size: 0.8em;
 }
 
 .schedule-cell {
