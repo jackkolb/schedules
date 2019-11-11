@@ -36,8 +36,7 @@ function selectCells(cellMousedown, cellMouseover, cellList) {
     const [rowMouseover, colMouseover] = [cellMouseover.getAttribute('data-row'), cellMouseover.getAttribute('data-col')]
     const [rowMin, colMin] = [Math.min(rowMousedown, rowMouseover), Math.min(colMousedown, colMouseover)]
     const [rowMax, colMax] = [Math.max(rowMousedown, rowMouseover), Math.max(colMousedown, colMouseover)]
-
-    let selectedCellList = []
+    const selectedCellList = []
     for (let i = 0; i < cellList.length; i++) {
         cellList[i].classList.remove("selected")
         const [row, col] = [cellList[i].getAttribute('data-row'), cellList[i].getAttribute('data-col')]
@@ -45,26 +44,24 @@ function selectCells(cellMousedown, cellMouseover, cellList) {
         if (insideBoundingBox) {
             selectedCellList.push(cellList[i])
             cellList[i].classList.add("selected")
-            paintCell(cellList[i], selectionType)
+            //paintCell(cellList[i], selectionType)
         } else {
-            const state = cellList[i].getAttribute('data-state')
-            paintCell(cellList[i], state)
+            //const state = cellList[i].getAttribute('data-state')
+            //paintCell(cellList[i], state)
         }
     }
     return selectedCellList
 }
 
 function populateScheduleGrid(users, tag="all") {
-    // Populating the arrays [105]
     let userArray = new Array(cells.length).fill(0);
     for (let i = 0; i < cells.length; i++) {
         userArray[i] = new Array();
     }
-
     totalScheduleArray = new Array(cells.length).fill(0);
     for (user in users) {
         let userScheduleArray = JSON.parse(users[user].schedule)
-        for (let i = 0; i < userScheduleArray.length; i++) {
+        for (let i = 0; i < userScheduleArray.length && i < userArray.length; i++) {
             if (userScheduleArray[i] == 1 && (tag == "all" || users[user].tags.includes(tag)) ) {
                 totalScheduleArray[i] += 1
                 userArray[i].push(user)
@@ -168,8 +165,9 @@ function createCell(row, col, state) {
     td.setAttribute('data-col', col)
 
     td.addEventListener("mousedown", cellOnMousedown)
-    td.addEventListener("mouseup", cellOnMouseup)
     td.addEventListener("mouseover", cellOnMouseover)
+    td.addEventListener("mouseup", cellOnMouseup)
+    
     return td
 }
 
@@ -194,31 +192,42 @@ function cellOnMouseover(event) {
         undefined
 */
 function updateMouseoverTooltip(tooltipId, userIdList, usersDictionary) {
+    const tooltip = document.getElementById(tooltipId)
+    tooltip.innerHTML = ""
     let concatenatedNames = ""
     for (let userId in userIdList) {
          concatenatedNames += usersDictionary[userId].name + ", "
+         let div = document.createElement('button')
+         div.innerHTML = usersDictionary[userId].name
+         tooltip.append(div)
     }
-    const tooltip = document.getElementById(tooltipId)
-    tooltip.innerHTML = concatenatedNames
+    //tooltip.innerHTML = concatenatedNames
 }
 
 function cellOnMousedown (event) {
     elemOnMousedown = event.target
-
-    const state = event.target.getAttribute('data-state')
-    if (Number(state) === 1) {
-    setCell(event.target, 0)
-        selectionType = 0
-    } else if (Number(state) === 0) {
-        setCell(event.target, 1)
-        selectionType = 1
-    }
+    selectionType = toggleState(event.target)
     selectedCells.push(event.target)
+}
+
+/*
+    toggleState()
+    Toggle and return the given element's data-state (0 or 1)
+    arguments:
+        elem: HTML element <td>
+    return:
+        integer
+*/
+function toggleState(elem) {
+    const state = elem.getAttribute('data-state')
+    const newState = Number(state) === 1 ? 0 : 1
+    elem.setAttribute('data-state', newState)
+    return newState
 }
 
 function cellOnMouseup (event) {
     for (let i = selectedCells.length-1; i >= 0; i--) {
-        setCell(selectedCells[i], selectionType)
+        selectedCells[i].setAttribute('data-state', selectionType)
         selectedCells[i].classList.remove("selected")
     }
 
@@ -241,22 +250,6 @@ function cellOnMouseup (event) {
         sendData('POST', FIREBASE_URL+'/update', jsonString)
     }
     submit(() => refreshData())
-}
-
-function setCell(elem, state) {
-    elem.setAttribute('data-state', state)
-    paintCell(elem, state)
-}
-
-function paintCell(elem, state) {
-    if (Number(state) === 1) {
-        elem.classList.add('cell-chosen')
-    } else if (Number(state) === 0) {
-        elem.classList.remove('cell-chosen')
-    } else {
-        console.log(elem)
-        console.error('Invalid state ' + state)
-    }
 }
 
 // converts an RGB value to a hex value (0-255)

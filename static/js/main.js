@@ -67,6 +67,88 @@ function populateUserTagCheckboxes(schedules) {
     }    
 }
 
+function convertToHTML(data) {
+    let ul = document.createElement('ul')
+
+    let li_name = document.createElement('li')
+    li_name.innerHTML = "name: " + data.name
+    ul.append(li_name)
+
+    let li_tags = document.createElement('li')
+    li_tags.innerHTML = "tags"
+    ul.append(li_tags)
+
+    let ul_tags = createTagsHTML(data.tags)
+    li_tags.append(ul_tags)
+
+    
+
+
+    let li_users = document.createElement('li')
+    li_users.innerHTML = "users"
+    ul.append(li_users)
+
+    let ul_users = createUsersHTML(data.users)
+    li_users.append(ul_users)
+
+    return ul
+}
+
+function createUsersHTML(dict) {
+    let ul = document.createElement('ul')
+    Object.keys(dict).forEach((key) => {
+        let li = document.createElement('li')
+        li.innerHTML = key //dict[key].name
+        ul.append(li)
+
+        let ul_key = document.createElement('ul')
+        
+        let li_name = document.createElement('li')
+        li_name.innerHTML = "name: " + dict[key].name
+        ul_key.append(li_name)
+
+        let li_password = document.createElement('li')
+        li_password.innerHTML = "password: " + dict[key].password
+        ul_key.append(li_password)
+
+        let li_schedule = document.createElement('li')
+        li_schedule.innerHTML = "schedule: "
+
+        let span = document.createElement('span')
+        span.style = "font-size: 10px;"
+        span.innerHTML = dict[key].schedule
+        li_schedule.append(span)
+        ul_key.append(li_schedule)
+
+        li.append(ul_key)
+    })
+    return ul
+}
+
+function createTagsHTML(dict) {
+    let ul = document.createElement('ul')
+
+    Object.keys(dict).forEach((key) => {
+        let li = document.createElement('li')
+        li.innerHTML = key
+        ul.append(li)
+
+        let ul_key = document.createElement('ul')
+        
+
+        let li_name = document.createElement('li')
+        li_name.innerHTML = "name: " + dict[key].name
+        ul_key.append(li_name)
+
+        let li_visible = document.createElement('li')
+        li_visible.innerHTML = "visible: " + dict[key].visible
+        ul_key.append(li_visible)
+
+        li.append(ul_key)
+    })
+    return ul
+}
+
 xhttp.onload = () => {
     if (xhttp.status == 200) {
     }
@@ -83,6 +165,11 @@ xhttp.onload = () => {
     populateScheduleGrid(users)    
     colorCells();
     document.getElementById('org-textbox-manager').value = orgData.name
+
+    console.log(orgData)
+
+    const div = document.getElementById('debug-container')
+    div.append(convertToHTML(orgData))
 }
 
 

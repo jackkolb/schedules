@@ -48,6 +48,12 @@ class Test {
 		return condition ? this.pass : this.fail
 	}
 
+	test_toggleState() {
+		let t1 = toggleState(createCell(0,0,0))
+		let t2 = toggleState(createCell(0,0,1))
+		return t1 === 1 && t2 === 0 ? this.pass : this.fail
+	}
+
 	test() {
 		console.log("==== Running tests ====")
 		//console.log("'.' is pass, 'F' is fail, 'E' is error")
@@ -56,6 +62,7 @@ class Test {
 		results += this.test_createTitleRow()
 		results += this.test_createCell()
 		results += this.test_selectCells()
+		results += this.test_toggleState()
 		console.log(results)
 	}
 }
