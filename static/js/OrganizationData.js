@@ -6,9 +6,9 @@ class OrganizationData {
     }
 
     update(data) {
-        this.name = data.name
-        this.tags = data.tags
-        this.users = data.users
+        this.name = data.name || null
+        this.tags = data.tags || null
+        this.users = data.users || null
     }
 
     getName() {
@@ -35,7 +35,7 @@ class OrganizationData {
         let tagNames = []
         for (let id in this.tags) {
             if (this.tags[id].name) {
-                tagName.push(this.tags[id].name)
+                tagNames.push(this.tags[id].name)
             }
         }
         return tagNames
@@ -57,7 +57,7 @@ class OrganizationData {
         let userNames = []
         for (let id in this.users) {
             if (this.users[id].name) {
-                userNames.push(this.tags[id].name)
+                userNames.push(this.users[id].name)
             }
         }
         return userNames
@@ -66,11 +66,34 @@ class OrganizationData {
     getUserScheduleById(userId) {
         if (this.users && this.users[userId] && this.users[userId].schedule) {
             try {
-                return JSON.parse(schedule)
+                return JSON.parse(this.users[userId].schedule)
             } catch (error) {
                 console.error(""+error)
             }
         }
         return null
     }
+
+    getSumSchedule() {
+        let schedules = []
+        for (let id in this.users) {
+            let schedule = this.getUserScheduleById(id)
+            schedules.push(schedule)
+        }
+        if (schedules.length < 1 || schedules[0] === null) {
+            return null
+        }
+        let sumSchedule = Array(schedules[0].length).fill(0)
+        for (let row = schedules.length-1; row >= 0 ; row--) {
+            if (schedules[row] === null) {
+                return null
+            }
+            for (let col = schedules[row].length-1; col >= 0; col--) {
+                sumSchedule[col] += schedules[row][col]
+            }
+        }
+        return sumSchedule
+    }
 }
+
+const organizationData = new OrganizationData()

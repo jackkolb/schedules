@@ -74,6 +74,7 @@ xhttp.onload = () => {
     }
     orgData = JSON.parse(xhttp.response)
     users = orgData.users
+    organizationData.update(orgData)
 
     main()
 
@@ -102,7 +103,7 @@ function convertToHTML(data) {
     let ul = document.createElement('ul')
 
     let li_name = document.createElement('li')
-    li_name.innerHTML = "name: " + data.name
+    li_name.innerHTML = "name: " + organizationData.getName()
     ul.append(li_name)
 
     let li_tags = document.createElement('li')
@@ -129,13 +130,13 @@ function createUsersHTML(dict) {
     let ul = document.createElement('ul')
     Object.keys(dict).forEach((key) => {
         let li = document.createElement('li')
-        li.innerHTML = key //dict[key].name
+        li.innerHTML = key
         ul.append(li)
 
         let ul_key = document.createElement('ul')
         
         let li_name = document.createElement('li')
-        li_name.innerHTML = "name: " + dict[key].name
+        li_name.innerHTML = "name: " + organizationData.getUserNameById(key) //dict[key].name
         ul_key.append(li_name)
 
         let li_password = document.createElement('li')
@@ -147,7 +148,7 @@ function createUsersHTML(dict) {
 
         let span = document.createElement('span')
         span.style = "font-size: 10px;"
-        span.innerHTML = typeof(dict[key].schedule)
+        span.innerHTML = organizationData.getUserScheduleById(key) //dict[key].schedule
         li_schedule.append(span)
         ul_key.append(li_schedule)
 
