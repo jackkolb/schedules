@@ -1,11 +1,10 @@
 from flask import Flask, render_template, request, jsonify
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 from firebase import firebase
 import firebase_util 
 
 app = Flask(__name__)
 cors = CORS(app)
-#app.config['CORS_HEADERS'] = 'Content-Type'
 
 @app.route("/")
 def index():
@@ -21,15 +20,6 @@ def get_org():
 def get_org_data():
     org_id = request.args.get("id")
     body = jsonify(firebase_util.get_org(org_id))
-
-    headers = {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": '*',
-        "Access-Control-Allow-Methods": 'PUT, GET, POST, DELETE, OPTIONS',
-        "Access-Control-Allow-Headers": 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
-        }
-
-#    raise request.HTTPResponse(status, headers, body)
     return body
 
 @app.route("/update", methods=["POST"])

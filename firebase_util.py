@@ -1,20 +1,26 @@
 import firebase_admin
 from firebase_admin import credentials, firestore
-import os
+import os, os.path
 
-firebase_admin.initialize_app(firebase_admin.credentials.Certificate({
-    "type": "service_account",
-    "project_id": "schedulioucr",
-    "private_key_id": os.environ["FIREBASEID"],
-    "private_key": os.environ["FIREBASEKEY"].replace("\\n", "\n"),
-    "client_email": "firebase-adminsdk-k5ndh@schedulioucr.iam.gserviceaccount.com",
-    "client_id": os.environ["CLIENTID"],
-    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-    "token_uri": "https://oauth2.googleapis.com/token",
-    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-k5ndh%40schedulioucr.iam.gserviceaccount.com"
-  })
-)
+
+if os.path.isfile('firebase_serviceaccount.json'):
+    print("authenticating from JSON file")
+    firebase_admin.initialize_app(firebase_admin.credentials.Certificate("firebase_serviceaccount.json"))
+else:
+    print ("authenticating from environment variables")
+    firebase_admin.initialize_app(firebase_admin.credentials.Certificate({
+        "type": "service_account",
+        "project_id": "schedulioucr",
+        "private_key_id": os.environ["FIREBASEID"],
+        "private_key": os.environ["FIREBASEKEY"].replace("\\n", "\n"),
+        "client_email": "firebase-adminsdk-k5ndh@schedulioucr.iam.gserviceaccount.com",
+        "client_id": os.environ["CLIENTID"],
+        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+        "token_uri": "https://oauth2.googleapis.com/token",
+        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+        "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-k5ndh%40schedulioucr.iam.gserviceaccount.com"
+    })
+    )
 
 database = firestore.client().collection("schedulio")
 
@@ -49,13 +55,7 @@ def update_schedule(org_id, user_id, schedule):
 def add_tag(org_id, tag_name):
     current_data = database.document(org_id).get()
     tag_id = str(len(current_data.to_dict()["tags"]))
-    data = {"tags": {
-                tag_id: {
-                    "name": tag_name,
-                    "visible": "true"
-                    }
-                }
-            }
+    data = {"tags": { tag_id: {"name": tag_name, "visible": "true" } } }
     database.document(str(org_id)).set(data, merge=True)
 
 # tested - Jack
