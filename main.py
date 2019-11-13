@@ -22,7 +22,16 @@ def get_org():
 @cross_origin()
 def get_org_data():
     org_id = request.args.get("id")
-    return jsonify(firebase_util.get_org(org_id))
+    body = jsonify(firebase_util.get_org(org_id))
+
+    headers = {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": '*',
+        "Access-Control-Allow-Methods": 'PUT, GET, POST, DELETE, OPTIONS',
+        "Access-Control-Allow-Headers": 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
+        }
+
+    raise HTTPResponse(status, headers, body)
 
 @app.route("/update", methods=["POST"])
 @cross_origin()
@@ -84,11 +93,6 @@ def update():
         firebase_util.update_schedule(org_id, user_id, schedule)
 
     return "success"
-
-@app.after_request
-def add_headers(response):
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
