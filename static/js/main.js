@@ -1,5 +1,5 @@
 let xhttp = new XMLHttpRequest();
-const BASE_URL = "https://schedulio-ucr.appspot.com"
+const BASE_URL = ""
 const scheduleTable = document.getElementById('schedule-table')
 let orgData = null
 let users = null
