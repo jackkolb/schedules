@@ -74,6 +74,57 @@ class OrganizationData {
         return null
     }
 
+    getArraySchedule() {
+        //let schedules = []
+        let arraySchedule = new Array(105)
+        console.log(arraySchedule)
+        for (let id in this.users) {
+            arraySchedule[i] = new Array()
+            let schedule = this.getUserScheduleById(id)
+            for (let i = 0; i < schedule.length; i++) {
+                if (schedule[i] === 1) {
+                    arraySchedule[i].push(id)
+                }
+            }
+            //schedules.push(schedule)
+        }
+        // if (schedules.length < 1 || schedules[0] === null) {
+        //     return null
+        // }
+        
+        // for (let i = 0; i < arraySchedule.length; i++) {
+        //     arraySchedule[i] = new Array()
+        //     for (let schedule of schedules) {
+        //         if (schedule[i] === 1) {
+        //             arraySchedule[i].push("A")
+        //         }
+        //     }
+        // }
+        return arraySchedule
+    }
+
+    // getArraySchedule() {
+    //     let schedules = []
+
+    //     for (let id in this.users) {
+    //         let schedule = this.getUserScheduleById(id)
+    //         schedules.push(schedule)
+    //     }
+    //     if (schedules.length < 1 || schedules[0] === null) {
+    //         return null
+    //     }
+    //     let arraySchedule = Array(schedules[0].length).fill(0)
+    //     for (let i = 0; i < arraySchedule.length; i++) {
+    //         arraySchedule[i] = new Array()
+    //         for (let schedule of schedules) {
+    //             if (schedule[i] === 1) {
+    //                 arraySchedule[i].push("A")
+    //             }
+    //         }
+    //     }
+    //     return arraySchedule
+    // }
+
     getSumSchedule() {
         let schedules = []
         for (let id in this.users) {
