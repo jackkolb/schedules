@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, HTTPResponse
+from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS, cross_origin
 from firebase import firebase
 import firebase_util 
@@ -31,7 +31,7 @@ def get_org_data():
         "Access-Control-Allow-Headers": 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
         }
 
-    raise HTTPResponse(status, headers, body)
+    raise request.HTTPResponse(status, headers, body)
 
 @app.route("/update", methods=["POST"])
 @cross_origin()
