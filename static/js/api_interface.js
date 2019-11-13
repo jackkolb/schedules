@@ -1,5 +1,5 @@
 function sendData(method, url, jsonString) {
-    var url = FIREBASE_URL + "/update"
+    var url = BASE_URL + "/update"
     var params = jsonString;
     var xhr = new XMLHttpRequest();
     xhr.open("POST", url, true);
@@ -10,14 +10,14 @@ function sendData(method, url, jsonString) {
 
 
 function requestSchedules() {
-    const url = FIREBASE_URL+'/org_data?id='+ORG_ID
+    const url = BASE_URL+'/org_data?id='+ORG_ID
     xhttp.open('GET', url, true)
     xhttp.send()
 }
 
 function refreshData() {
     req = new XMLHttpRequest();
-    req.open('GET', FIREBASE_URL+'/org_data?id='+ORG_ID, true)
+    req.open('GET', BASE_URL+'/org_data?id='+ORG_ID, true)
     req.send()
     req.onload = () => {
         orgData = JSON.parse(xhttp.response)
@@ -37,7 +37,7 @@ function changeOrganizationName() {
             'id='+ ORG_ID + 
             '&action='+'change_org_name' +
             '&name='+name
-        sendData('POST', FIREBASE_URL+'/update', jsonString)
+        sendData('POST', BASE_URL+'/update', jsonString)
 }
 
 function addTag() {
@@ -47,5 +47,5 @@ function addTag() {
         'id='+ ORG_ID + 
         '&action='+'add_tag' +
         '&tag='+name
-    sendData('POST', FIREBASE_URL+'/update', jsonString)
+    sendData('POST', BASE_URL+'/update', jsonString)
 }
