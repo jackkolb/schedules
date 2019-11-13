@@ -5,21 +5,19 @@ import firebase_util
 
 app = Flask(__name__)
 cors = CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type'
+#app.config['CORS_HEADERS'] = 'Content-Type'
 
 @app.route("/")
 def index():
     return render_template("index.html")
 
 @app.route("/org", methods=["GET"])
-@cross_origin()
 def get_org():
     org_id = request.args.get("id")
     print(org_id)
     return render_template("scheduler.html", org_id=org_id, user_id=1)
 
 @app.route("/org_data", methods=["GET"])
-@cross_origin()
 def get_org_data():
     org_id = request.args.get("id")
     body = jsonify(firebase_util.get_org(org_id))
@@ -31,10 +29,10 @@ def get_org_data():
         "Access-Control-Allow-Headers": 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
         }
 
-    raise request.HTTPResponse(status, headers, body)
+#    raise request.HTTPResponse(status, headers, body)
+    return body
 
 @app.route("/update", methods=["POST"])
-@cross_origin()
 def update():
     if "id" in request.form.keys():
         org_id = request.form["id"]
